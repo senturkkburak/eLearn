@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
   </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -22,19 +23,33 @@
               <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="#">Categories</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/profile">My Profile</a>
-              </li>
+              
               <li class="nav-item">
                 <a class="nav-link" href="/teacher">Become a Teacher</a>
               </li>
+
+              <% if(!currentUser) { %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/login">Sign In</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/register">Sign Up</a>
+                </li>
+
+
+              <% } else{%>
               <li class="nav-item">
-                <a class="nav-link" href="/login">Sign In</a>
+                <a class="nav-link" href="/profile"><%= currentUser.username %></a>
               </li>
+
               <li class="nav-item">
-                <a class="nav-link" href="/register">Sign Up</a>
+                <a class="nav-link" href="/newCourse">Create Course</a>
               </li>
-              
+
+              <li class="nav-item">
+                <a class="nav-link" href="/signout">Sign Out</a>
+              </li>
+              <% } %>
               
             </ul>
             <form class="d-flex">

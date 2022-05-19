@@ -1,6 +1,9 @@
 const express = require('express'),
 passport = require("passport"),
 User=require('../models/userModel'),
+Course=require('../models/courseModel'),
+LocalStrategy = require("passport-local"),
+expressSession=require("express-session"),
     router = express.Router();
 
 
@@ -40,15 +43,19 @@ router.get("/profile", (req, res) => {
 router.get("/login", (req, res) => {
     res.render('login');
 })
-router.post("/login", (req, res) => {
 
-})
+router.post('/login',passport.authenticate("local",
+{
+    successRedirect:'/',
+    failureRedirect:'/login'
+}),(req,res)=>{
+
+});
+
 router.get("/register", (req, res) => {
     res.render('register');
 })
 router.post("/register", (req, res) => {
-    
-    
     const newUser = new User({
         username: req.body.username,
         password: req.body.password
@@ -59,6 +66,7 @@ router.post("/register", (req, res) => {
             res.redirect ("/register")
         }
         passport.authenticate("local")(req,res, ()=>{
+        
         res.redirect("/");
         });
     })
@@ -68,6 +76,35 @@ router.get("/teacher", (req, res) => {
 })
 router.get("/categories", (req, res) => {
     res.send("Category Page");
+});
+router.get("/signout",(req,res)=>{
+req.logout();
+res.redirect("/");
+});
+router.get("/newCourse", (req, res) => {
+    res.render('course/newCourse');
 })
+router.post("/newCourse", (req, res) => {
+
+    
+    let courseName = req.body.data.courseName;
+    let courseDescription = req.body.data.courseDescription;
+    let coursePrice = req.body.data.coursePrice; 
+     // let courseOwner = currentUser.username;
+    // let courseOwner = "adsf"
+
+    let newCourse = { courseName:courseName , courseDescription:courseDescription, coursePrice:coursePrice/*, courseOwner:courseOwner*/};
+
+    Course.create(newCourse)
+    .then((newCourse)=>{
+        console.log(newCourse);
+        res.status(201).json(newCourse);
+    })
+    .catch((err)=>{
+        console.log("====ERROR====");
+        console.log(err);
+        res.send(err);
+    });
+  });
 
 module.exports = router;
