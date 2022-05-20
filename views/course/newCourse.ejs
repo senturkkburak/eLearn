@@ -2,13 +2,13 @@
 
 <br><br><br><br>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 
 <div class="container d-flex flex-row mt-4">
     <div class="col-4"></div>
     <div class="col-4">
         <h3 class="mb-3 p-2 border-bottom">Create Course</h3>
-        <form>
+        <form action="/putVideo">
             <div class="mb-3">
                 <i class="fa-solid fa-user "></i>
                 <label for="courseName">Course Name</label>
@@ -24,10 +24,17 @@
                 <label for="coursePrice">Course Price ($)</label>
                 <input type="text" id="coursePrice" class="form-control" placeholder="$"autocomplete="off"required>
             </div>
+            <div class="mb-3">
+                <i class="fa-solid fa-user "></i>
+                <label for="courseCurriculum">Course Curriculum </label>
+                <textarea name="" id="courseCurriculum" ></textarea>
+            </div>
 
             <button id="createButton" class="btn btn-lg btn-primary mt-3 btn-lg-6">Create</button>
             
         </form>
+
+        
         
     
     </div>
@@ -51,12 +58,12 @@
             var courseName = $("#courseName").val();
             var courseDescription = $("#courseDescription").val();
             var coursePrice = $("#coursePrice").val();
-
-
+            var courseCurriculum=CKEDITOR.instances.courseCurriculum.getData();
             let data = {
                 courseName : courseName,
                 courseDescription : courseDescription,
-                coursePrice : coursePrice
+                coursePrice : coursePrice,
+                courseCurriculum:courseCurriculum
             }
             
                 $.post("newCourse",{data:data})
@@ -73,6 +80,9 @@
 
  
 
+</script>
+<script>
+    CKEDITOR.replace( 'courseCurriculum' );
 </script>
 <br><br><br><br>
 
