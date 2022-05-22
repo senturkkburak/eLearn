@@ -34,45 +34,46 @@ const conn = mongoose.createConnection(mongoURI);
 
 
 
-let data = [
-    {
-        courseTitle: "bir Title",
-        courseDescription: "bir Description",
-        courseAuthor: "bir Author",
-        price: "bir fiyat"
-    },
-    {
-        courseTitle: "ikinci gun Title",
-        courseDescription: "iki Description",
-        courseAuthor: "iki Author",
-        price: "iki fiyat"
-    },
-    {
-        courseTitle: "uc Title",
-        courseDescription: "uc Description",
-        courseAuthor: "uc Author",
-        price: "uc fiyat"
-    }
+// let data = [
+//     {
+//         courseTitle: "bir Title",
+//         courseDescription: "bir Description",
+//         courseAuthor: "bir Author",
+//         price: "bir fiyat"
+//     },
+//     {
+//         courseTitle: "ikinci gun Title",
+//         courseDescription: "iki Description",
+//         courseAuthor: "iki Author",
+//         price: "iki fiyat"
+//     },
+//     {
+//         courseTitle: "uc Title",
+//         courseDescription: "uc Description",
+//         courseAuthor: "uc Author",
+//         price: "uc fiyat"
+//     }
 
-]
+// ]
 
 
 
 router.get("/", (req, res) => {
-    Course.find({},(err,course)=>{
-        if(err){
-            console.log(err)
-        }
-        else{
-            
-            res.render("home",{course:course})
-        }
-    })
-    res.render('home', { data: data });
-})
-router.get("/profile", (req, res) => {
-    res.render('profile');
-})
+    Course.find({},(err,foundCourses)=>{
+      if(err){
+        console.log("====ERROR====")
+        console.log(err);
+      }else{
+        console.log("====All Courses====")
+        console.log(foundCourses);
+        res.render("home",{foundCourses:foundCourses })
+      }
+    });
+
+});
+router.get("/profile", isLoggedIn, (req, res) => {
+  res.render('profile');
+});
 
 router.get("/login", (req, res) => {
     res.render('login');
@@ -105,17 +106,17 @@ router.post("/register", (req, res) => {
         });
     })
 })
-router.get("/teacher", (req, res) => {
+router.get("/teacher", isLoggedIn, (req, res) => {
     res.render('teacher');
 })
-router.get("/categories", (req, res) => {
+router.get("/categories", isLoggedIn,(req, res) => {
     res.send("Category Page");
 });
 router.get("/signout",(req,res)=>{
 req.logout();
 res.redirect("/");
 });
-router.get("/newCourse", (req, res) => {
+router.get("/newCourse",isLoggedIn, (req, res) => {
     res.render('course/newCourse');
 })
 router.post("/newCourse", (req, res) => {
@@ -143,19 +144,31 @@ router.post("/newCourse", (req, res) => {
     });
   });
 
-  router.get("/testing",(req,res)=>{
+  router.get("/testing", isLoggedIn,(req,res)=>{
       Course.find().then((foundCourses)=>{
-          res.json(foundCourses)
+          res.json(foundCourses);
       }).catch((err)=>{
-        console.log(err)
+        console.log(err);
+        res.send(err);
       })
   })
+  router.get("/courses/:courseId", isLoggedIn,(req,res)=>{
+    Course.findById(req.params.courseId)
+    .then((foundCourse)=>{
+      res.render("course/showCourse",{foundCourse:foundCourse});
+    })
+    .catch((err)=>{
+      console.log("====ERROR====")
+      console.log(err);
+      res.send(err);
+    })
+  });
 
   router.get("/example",(req,res)=>{
       res.render("example")
   })
 
-  router.get("/putVideo",(req,res)=>{
+  router.get("/putVideo", isLoggedIn,(req,res)=>{
       res.render("course/putVideo")
   })
 
@@ -192,7 +205,7 @@ const upload = multer({ storage });
 
 // @route GET /
 // @desc Loads form
-router.get('/putVideo', (req, res) => {
+router.get('/putVideo', isLoggedIn, (req, res) => {
   gfs.files.find().toArray((err, files) => {
     // Check if files
     if (!files || files.length === 0) {
@@ -287,6 +300,14 @@ app.delete('/files/:id', (req, res) => {
   });
 });
 
+
+
+function isLoggedIn(req,res,next){
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect("/login");
+}
 
 module.exports = router;
 
