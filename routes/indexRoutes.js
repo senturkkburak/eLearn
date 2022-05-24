@@ -119,22 +119,41 @@ res.redirect("/");
 router.get("/newCourse",isLoggedIn, (req, res) => {
     res.render('course/newCourse');
 })
-router.post("/newCourse", (req, res) => {
 
-    
-    let courseName = req.body.data.courseName;
-    let courseDescription = req.body.data.courseDescription;
-    let coursePrice = req.body.data.coursePrice; 
-    let courseCurriculum= req.body.data.courseCurriculum;
+var storageImage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads')
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now())
+  }
+});
+var uploadImage = multer({ storage: storageImage });
+
+
+router.post("/newCourse",uploadImage.single('image'), (req, res,next) => {
+
+
+    var obj={
+      coursename: req.body.data.courseName,
+      courseDescription : req.body.data.courseDescription,
+      coursePrice : req.body.data.coursePrice, 
+      courseCurriculum: req.body.data.courseCurriculum,
+      courseImg: {
+        data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+        contentType: 'image/png'
+    }
+    }
+     
      // let courseOwner = currentUser.username;
     // let courseOwner = "adsf"
 
-    let newCourse = { courseName:courseName , courseDescription:courseDescription, coursePrice:coursePrice,courseCurriculum:courseCurriculum/*, courseOwner:courseOwner*/};
+   
 
-    Course.create(newCourse)
-    .then((newCourse)=>{
-        console.log(newCourse);
-        res.status(201).json(newCourse);
+    Course.create(obj)
+    .then((obj)=>{
+        console.log(obj);
+        res.status(201).json(obj);
         
     })
     .catch((err)=>{
@@ -143,6 +162,8 @@ router.post("/newCourse", (req, res) => {
         res.send(err);
     });
   });
+
+  
 
   router.get("/testing", isLoggedIn,(req,res)=>{
       Course.find().then((foundCourses)=>{
@@ -163,6 +184,8 @@ router.post("/newCourse", (req, res) => {
       res.send(err);
     })
   });
+
+  
 
   router.get("/example",(req,res)=>{
       res.render("example")
@@ -202,6 +225,8 @@ const storage = new GridFsStorage({
   }
 });
 const upload = multer({ storage });
+
+
 
 // @route GET /
 // @desc Loads form
@@ -299,6 +324,10 @@ app.delete('/files/:id', (req, res) => {
     res.redirect('/');
   });
 });
+
+router.get("/payment",(req,res)=>{
+  res.render("payment.ejs")
+})
 
 
 

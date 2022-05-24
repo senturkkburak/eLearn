@@ -1,89 +1,99 @@
 <%- include ('../partials/header') %>
 
-<br><br><br><br>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+    <br><br><br><br>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 
-<div class="container d-flex flex-row mt-4">
-    <div class="col-4"></div>
-    <div class="col-4">
-        <h3 class="mb-3 p-2 border-bottom">Create Course</h3>
-        <form action="/putVideo">
-            <div class="mb-3">
-                <i class="fa-solid fa-user "></i>
-                <label for="courseName">Course Name</label>
-                <input type="text" id="courseName" class="form-control" placeholder="Course Name" autocomplete="off" required>
-            </div>
-            <div class="mb-3">
-                <i class="fa-solid fa-user "></i>
-                <label for="courseDescription">Course Description</label>
-                <input type="text" id="courseDescription" class="form-control" placeholder="Course Description"autocomplete="off"required>
-            </div>
-            <div class="mb-3">
-                <i class="fa-solid fa-user "></i>
-                <label for="coursePrice">Course Price ($)</label>
-                <input type="text" id="coursePrice" class="form-control" placeholder="$"autocomplete="off"required>
-            </div>
-            <div class="mb-3">
-                <i class="fa-solid fa-user "></i>
-                <label for="courseCurriculum">Course Curriculum </label>
-                <textarea name="" id="courseCurriculum" ></textarea>
-            </div>
+    <div class="container d-flex flex-row ">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <h3 class="mb-3 p-2 border-bottom">Create Course</h3>
+            <form action="/putVideo">
+                <div class="mb-3">
+                    <i class="fa-solid fa-user "></i>
+                    <label for="courseName">Course Name</label>
+                    <input type="text" id="courseName" class="form-control" placeholder="Course Name" autocomplete="off"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <i class="fa-solid fa-user "></i>
+                    <label for="courseDescription">Course Description</label>
+                    <input type="text" id="courseDescription" class="form-control" placeholder="Course Description"
+                        autocomplete="off" required>
+                </div>
+                <div class="mb-3">
+                    <i class="fa-solid fa-user "></i>
+                    <label for="coursePrice">Course Price ($)</label>
+                    <input type="text" id="coursePrice" class="form-control" placeholder="$" autocomplete="off"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <i class="fa-solid fa-user "></i>
+                    <label for="coursePrice">Course Image</label>
+                    <input type="file" id="courseImage" class="form-control" placeholder="Image" autocomplete="off"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <i class="fa-solid fa-user "></i>
+                    <label for="courseCurriculum">Course Curriculum </label>
+                    <textarea name="" id="courseCurriculum"></textarea>
+                </div>
 
-            <button id="createButton" class="btn btn-lg btn-primary mt-3 btn-lg-6">Create</button>
-            
-        </form>
+                <button id="createButton" class="btn btn-lg btn-primary mt-3 btn-lg-6">Create</button>
 
-        
-        
-    
+            </form>
+
+
+
+
+        </div>
+        <div class="col-4"></div>
     </div>
-    <div class="col-4"></div>
-</div>
-<script>
-
-    
-    $(document).ready(function(){
-    $("#createButton").click(function(){
-
-        if($("#coursePrice").val() <= 0){
-            alert("Price must be higher than 0");
-        } 
-        if($.isNumeric( $("#coursePrice").val())== false){
-            alert("Price must be an integer");
-
-        }
-        if(($.isNumeric( $("#coursePrice").val())== true) &&($("#coursePrice").val() > 0) ){
-            
-            var courseName = $("#courseName").val();
-            var courseDescription = $("#courseDescription").val();
-            var coursePrice = $("#coursePrice").val();
-            var courseCurriculum=CKEDITOR.instances.courseCurriculum.getData();
-            let data = {
-                courseName : courseName,
-                courseDescription : courseDescription,
-                coursePrice : coursePrice,
-                courseCurriculum:courseCurriculum
-            }
-            
-                $.post("newCourse",{data:data})
-                .then(function(addedCourse){
-                    console.log(addedCourse)
-                });
-                   
-
-        }
-
-    });
-});
+    <script>
 
 
- 
+        $(document).ready(function () {
+            $("#createButton").click(function () {
 
-</script>
-<script>
-    CKEDITOR.replace( 'courseCurriculum' );
-</script>
-<br><br><br><br>
+                if ($("#coursePrice").val() <= 0) {
+                    alert("Price must be higher than 0");
+                }
+                if ($.isNumeric($("#coursePrice").val()) == false) {
+                    alert("Price must be an integer");
 
-<%- include ('../partials/footer') %>
+                }
+                if (($.isNumeric($("#coursePrice").val()) == true) && ($("#coursePrice").val() > 0)) {
+
+                    var courseName = $("#courseName").val();
+                    var courseDescription = $("#courseDescription").val();
+                    var coursePrice = $("#coursePrice").val();
+                    var courseCurriculum = CKEDITOR.instances.courseCurriculum.getData();
+                    let data = {
+                        courseName: courseName,
+                        courseDescription: courseDescription,
+                        coursePrice: coursePrice,
+                        courseCurriculum: courseCurriculum,
+                        
+                    }
+
+                    $.post("newCourse", { data: data })
+                        .then(function (addedCourse) {
+                            console.log(addedCourse)
+                        });
+
+
+                }
+
+            });
+        });
+
+
+
+
+    </script>
+    <script>
+        CKEDITOR.replace('courseCurriculum');
+    </script>
+    <br><br><br><br>
+
+    <%- include ('../partials/footer') %>

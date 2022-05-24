@@ -1,13 +1,13 @@
  <%- include ('./partials/header') %>
  
 
-<h2>Sizin için önerilenler</h2>
-     <div class="container">
+<h2 style="margin: 30px;">Sizin için önerilenler</h2>
+     <div class="container" style="display: flex; flex-direction: row ; overflow-x: scroll; overflow-y: hidden;">
          <% foundCourses.forEach( (course)=>{ %>
        
     
-      <div class="item ">
-        <div class="card" style="width: 14rem;">
+      <div class="item " >
+        <div class="card" style="width: 14rem; margin: 15px 25px;  ">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/640px-ISO_C%2B%2B_Logo.svg.png" height="10rem" class="card-img-top" alt="...">
           <div class="card-body">
             <h5 class="card-title"><%=   course.courseName  %></h5>
@@ -20,20 +20,46 @@
       </div>
 <% });  %>
 </div>
-
-    <h2 class="m-5">En Popüler Kurslar</h2>
-    <div class="owl-carousel owl-theme m-5">
-      <div class="item ">
-        <div class="card" style="width: 14rem;">
+<h2 style="margin: 30px;">En Popüler Kurslar</h2>
+     <div class="container" style="display: flex; flex-direction: row ; overflow-x: scroll; overflow-y: hidden;">
+         <% foundCourses.forEach( (course)=>{ %>
+       
+    
+      <div class="item " >
+        <div class="card" style="width: 14rem; margin: 15px 25px;  ">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/640px-ISO_C%2B%2B_Logo.svg.png" height="10rem" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">120 Saat Komple Uygulamalı Web geliştirme</h5>
-            <p class="card-text">Sadık Turan</p>
-            <p>149.99TL</p>
-            <a href="#" class="btn btn-warning btn-sm">En çok satan</a>
+            <h5 class="card-title"><%=   course.courseName  %></h5>
+            <p class="card-text"><%=   course.courseDescription  %></p>
+            <p class="card-text"><%=   course.coursePrice  %> $</p>
+            
+            <a href="/courses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
           </div>
         </div>
       </div>
+<% });  %>
+</div>
+<h2 style="margin: 30px;">Sizin için önerilenler</h2>
+     <div class="container" style="display: flex; flex-direction: row ; overflow-x: scroll; overflow-y: hidden;">
+         <% foundCourses.forEach( (course)=>{ %>
+       
+    
+      <div class="item " >
+        <div class="card" style="width: 14rem; margin: 15px 25px;  ">
+          <img src="" height="10rem" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title"><%=   course.courseName  %></h5>
+            <p class="card-text"><%=   course.courseDescription  %></p>
+            <p class="card-text"><%=   course.coursePrice  %> $</p>
+            
+            <a href="/courses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
+          </div>
+        </div>
+      </div>
+<% });  %>
+</div>
+
+   
     
 
   

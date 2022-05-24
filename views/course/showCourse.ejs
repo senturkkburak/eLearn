@@ -1,8 +1,79 @@
 <%- include ('../partials/header') %>
 
 <br><br><br><br>
+<style>
+    .container{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .image-container {
+        width: 100%;
+        height:200px;
+        background-color: #000;
+    }
+    .ogrenecekleriniz{
+        width: 50%;
+        margin-top: 50px;
+        border: 1px solid black;
+        margin-left: 100px;
+    }
+    h2{
+        font-size: 2rem;
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        
+    }
+    span,p{
+        font-size: 0.85rem;
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+
+    .card{
+        width: 30%;
+        height:300px;
+        display: inline;
+    }
+
+    button{
+        margin-top: 20px;
+
+        padding: 5px;
+        width: 50%;
+        border: 1px solid #000;
+        background-color: rgb(135, 79, 186);
+        color: white;
+        font-size: 1.5rem;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+
+<div class="image-container">
+    
+</div>
+<div class="container">
+    <div class="ogrenecekleriniz">
+        <h2>Öğrenecekleriniz</h2>
+        <span>Task temelli programlama ile asenkron kodlar yazmayı öğreneceksiniz</span>
+        <p>TPL ile multi-thread üzerinde çalışan kodlar yazmayı öğreneceksiniz.</p>
+        <p>PLINQ ile multi-thread üzerinde çalışan LINQ sorguları yazmayı öğreneceksiniz.</p>
+    </div>
+    
+    <div class="card">
+        <img src="" alt="">
+        <h3>35TL</h3>
+        <button>Satın Al</button>
+    </div>
+</div>
+
+
 
 <div class="container d-flex flex-row mt-4">
     <div class="col-4"></div>
