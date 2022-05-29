@@ -11,10 +11,14 @@ const path = require('path');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const multer = require('multer');
+var ObjectId = require('mongodb').ObjectId;
 const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
-
+const formidable = require('formidable');
+const fileSystem = require('fs');
+const {getVideoDurationInSeconds} = require('get-video-duration');
+const { db } = require('../models/userModel');
 const app = express();
 
 // Middleware
@@ -64,8 +68,6 @@ router.get("/", (req, res) => {
         console.log("====ERROR====")
         console.log(err);
       }else{
-        console.log("====All Courses====")
-        console.log(foundCourses);
         res.render("home",{foundCourses:foundCourses })
       }
     });
@@ -74,6 +76,15 @@ router.get("/", (req, res) => {
 router.get("/profile", isLoggedIn, (req, res) => {
   res.render('profile');
 });
+
+
+function getUser(id,callBack){
+  User.findOne({
+    "_id":ObjectId(id)
+  },  function(error,user){
+    callBack(user);
+  });
+}
 
 router.get("/login", (req, res) => {
     res.render('login');
@@ -131,18 +142,14 @@ var storageImage = multer.diskStorage({
 var uploadImage = multer({ storage: storageImage });
 
 
-router.post("/newCourse",uploadImage.single('image'), (req, res,next) => {
+router.post("/newCourse", (req, res,next) => {
 
 
     var obj={
-      coursename: req.body.data.courseName,
+      courseName: req.body.data.courseName,
       courseDescription : req.body.data.courseDescription,
       coursePrice : req.body.data.coursePrice, 
-      courseCurriculum: req.body.data.courseCurriculum,
-      courseImg: {
-        data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-        contentType: 'image/png'
-    }
+      courseCurriculum: req.body.data.courseCurriculum
     }
      
      // let courseOwner = currentUser.username;
@@ -186,6 +193,62 @@ router.post("/newCourse",uploadImage.single('image'), (req, res,next) => {
   });
 
   
+  router.get("/upload", isLoggedIn,(req,res)=>{
+    res.render("course/upload")
+})
+router.post("/upload-video",isLoggedIn,function(request,result){
+  const formData=new formidable.IncomingForm();
+  formData.maxFileSize = 1000 * 1024 * 1024;
+  formData.parse(request, function(error,fields,files){
+    var title = fields.title;
+    var description = fields.description;
+    var tags = fields.tags;
+    var category = fields.category;
+
+    var oldPathThumbnail = files.thumbnail.filepath;
+    var thumbnail = "./views/thumbnails/" + new Date().getTime() + "-" +
+    files.thumbnail.filename;
+    fileSystem.rename(oldPathThumbnail,thumbnail, function(error){
+      //
+    });
+    var oldPathVideo = files.video.filepath;
+    var newPath = "./views/videos/"+ new Date().getTime() +"-"+files
+    .video.filename;
+    fileSystem.rename(oldPathVideo,newPath,function(error){
+   //
+      getUser(request.session.user.id,function(user){
+        var currentTime = new Date().getTime();
+        getVideoDurationInSeconds(newPath).then(function(duration){
+          var hours = Math.floor(duration / 60 / 60);
+          var minutes = Math.floor(duration / 60) - (hours * 60);
+          var seconds = Math.floor(duration % 60);
+          db.collection("videos").insertOne({
+            
+              "filePath":newPath,
+              "thumbnail":thumbnail,
+              "title":title,
+              "description":description,
+              "tags":tags,
+              "category":category,
+              "createdAt":currentTime,
+              "minutes":minutes,
+              "seconds":seconds,
+              "hours":hours,
+              "watch":currentTime,
+              "views":0,
+              "playlist":"",
+              "likers":[],
+              "dislikers":[],
+              "comments":[]
+          },function(error,data){
+
+          });
+          result.redirect("/");
+        });
+      });
+    });
+  });
+});
 
   router.get("/example",(req,res)=>{
       res.render("example")

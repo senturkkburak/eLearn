@@ -7,12 +7,6 @@ const CourseSchema = new Schema({
 	courseDescription: { type: String, require: true },
 	coursePrice: { type: Number, require: true },
 	courseCurriculum: { type: String, require: true },
-	courseImage:
-	{
-		data: Buffer,
-		contentType: String
-
-	},
 	// courseOwner:{type: String},
 	date: { type: Date, default: Date.now }
 },
