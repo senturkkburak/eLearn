@@ -1,11 +1,13 @@
 const express = require('express'),
-passport = require("passport"),
-User=require('../models/userModel'),
-Course=require('../models/courseModel'),
-LocalStrategy = require("passport-local"),
-expressSession=require("express-session"),
-    router = express.Router();
-    
+  passport = require("passport"),
+  User = require('../models/userModel'),
+  Course = require('../models/courseModel'),
+  LocalStrategy = require("passport-local"),
+  expressSession = require("express-session"),
+
+
+  router = express.Router();
+
 const bodyParser = require('body-parser');
 const path = require('path');
 const crypto = require('crypto');
@@ -17,7 +19,7 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const formidable = require('formidable');
 const fileSystem = require('fs');
-const {getVideoDurationInSeconds} = require('get-video-duration');
+const { getVideoDurationInSeconds } = require('get-video-duration');
 const { db } = require('../models/userModel');
 const app = express();
 
@@ -25,6 +27,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
+
+
 
 // Mongo URI
 const mongoURI = 'mongodb://localhost:27017';
@@ -63,14 +67,14 @@ const conn = mongoose.createConnection(mongoURI);
 
 
 router.get("/", (req, res) => {
-    Course.find({},(err,foundCourses)=>{
-      if(err){
-        console.log("====ERROR====")
-        console.log(err);
-      }else{
-        res.render("home",{foundCourses:foundCourses })
-      }
-    });
+  Course.find({}, (err, foundCourses) => {
+    if (err) {
+      console.log("====ERROR====")
+      console.log(err);
+    } else {
+      res.render("home", { foundCourses: foundCourses })
+    }
+  });
 
 });
 router.get("/profile", isLoggedIn, (req, res) => {
@@ -78,128 +82,128 @@ router.get("/profile", isLoggedIn, (req, res) => {
 });
 
 
-function getUser(id,callBack){
+function getUser(id, callBack) {
   User.findOne({
-    "_id":ObjectId(id)
-  },  function(error,user){
+    "_id": ObjectId(id)
+  }, function (error, user) {
     callBack(user);
   });
 }
 
 router.get("/login", (req, res) => {
-    res.render('login');
+  res.render('login');
 })
 
-router.post('/login',passport.authenticate("local",
-{
-    successRedirect:'/',
-    failureRedirect:'/login'
-}),(req,res)=>{
+router.post('/login', passport.authenticate("local",
+  {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  }), (req, res) => {
 
-});
+  });
 
 router.get("/register", (req, res) => {
-    res.render('register');
+  res.render('register');
 })
 router.post("/register", (req, res) => {
-    const newUser = new User({
-        username: req.body.username,
-        password: req.body.password
-     });
-    User.register(newUser, req.body.password, (err, user)=>{
-        if(err){
-            console.log(err);
-            res.redirect ("/register")
-        }
-        passport.authenticate("local")(req,res, ()=>{
-        
-        res.redirect("/");
-        });
-    })
+  const newUser = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+  User.register(newUser, req.body.password, (err, user) => {
+    if (err) {
+      console.log(err);
+      res.redirect("/register")
+    }
+    passport.authenticate("local")(req, res, () => {
+
+      res.redirect("/");
+    });
+  })
 })
 router.get("/teacher", isLoggedIn, (req, res) => {
-    res.render('teacher');
+  res.render('teacher');
 })
-router.get("/categories", isLoggedIn,(req, res) => {
-    res.send("Category Page");
+router.get("/categories", isLoggedIn, (req, res) => {
+  res.send("Category Page");
 });
-router.get("/signout",(req,res)=>{
-req.logout();
-res.redirect("/");
+router.get("/signout", (req, res) => {
+  req.logout();
+  res.redirect("/");
 });
-router.get("/newCourse",isLoggedIn, (req, res) => {
-    res.render('course/newCourse');
+router.get("/newCourse", isLoggedIn, (req, res) => {
+  res.render('course/newCourse');
 })
 
 var storageImage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'uploads')
+    cb(null, 'uploads')
   },
   filename: (req, file, cb) => {
-      cb(null, file.fieldname + '-' + Date.now())
+    cb(null, file.fieldname + '-' + Date.now())
   }
 });
 var uploadImage = multer({ storage: storageImage });
 
 
-router.post("/newCourse", (req, res,next) => {
+router.post("/newCourse", (req, res, next) => {
 
 
-    var obj={
-      courseName: req.body.data.courseName,
-      courseDescription : req.body.data.courseDescription,
-      coursePrice : req.body.data.coursePrice, 
-      courseCurriculum: req.body.data.courseCurriculum
-    }
-     
-     // let courseOwner = currentUser.username;
-    // let courseOwner = "adsf"
+  var obj = {
+    courseName: req.body.data.courseName,
+    courseDescription: req.body.data.courseDescription,
+    coursePrice: req.body.data.coursePrice,
+    courseCurriculum: req.body.data.courseCurriculum
+  }
 
-   
+  // let courseOwner = currentUser.username;
+  // let courseOwner = "adsf"
 
-    Course.create(obj)
-    .then((obj)=>{
-        console.log(obj);
-        res.status(201).json(obj);
-        
+
+
+  Course.create(obj)
+    .then((obj) => {
+      console.log(obj);
+      res.status(201).json(obj);
+
     })
-    .catch((err)=>{
-        console.log("====ERROR====");
-        console.log(err);
-        res.send(err);
+    .catch((err) => {
+      console.log("====ERROR====");
+      console.log(err);
+      res.send(err);
     });
-  });
+});
 
-  
 
-  router.get("/testing", isLoggedIn,(req,res)=>{
-      Course.find().then((foundCourses)=>{
-          res.json(foundCourses);
-      }).catch((err)=>{
-        console.log(err);
-        res.send(err);
-      })
+
+router.get("/testing", isLoggedIn, (req, res) => {
+  Course.find().then((foundCourses) => {
+    res.json(foundCourses);
+  }).catch((err) => {
+    console.log(err);
+    res.send(err);
   })
-  router.get("/courses/:courseId", isLoggedIn,(req,res)=>{
-    Course.findById(req.params.courseId)
-    .then((foundCourse)=>{
-      res.render("course/showCourse",{foundCourse:foundCourse});
+})
+router.get("/courses/:courseId", isLoggedIn, (req, res) => {
+  Course.findById(req.params.courseId)
+    .then((foundCourse) => {
+      res.render("course/showCourse", { foundCourse: foundCourse });
     })
-    .catch((err)=>{
+    .catch((err) => {
       console.log("====ERROR====")
       console.log(err);
       res.send(err);
     })
-  });
+});
 
-  
-  router.get("/upload", isLoggedIn,(req,res)=>{
-    res.render("course/upload")
+
+router.get("/upload", isLoggedIn, (req, res) => {
+  res.render("course/upload")
 })
-router.post("/upload-video",isLoggedIn,function(request,result){
-  const formData=new formidable.IncomingForm();
+router.post("/upload-video", isLoggedIn, function (request, result) {
+  const formData = new formidable.IncomingForm();
   formData.maxFileSize = 1000 * 1024 * 1024;
-  formData.parse(request, function(error,fields,files){
+  formData.parse(request, function (error, fields, files) {
     var title = fields.title;
     var description = fields.description;
     var tags = fields.tags;
@@ -207,40 +211,40 @@ router.post("/upload-video",isLoggedIn,function(request,result){
 
     var oldPathThumbnail = files.thumbnail.filepath;
     var thumbnail = "./views/thumbnails/" + new Date().getTime() + "-" +
-    files.thumbnail.filename;
-    fileSystem.rename(oldPathThumbnail,thumbnail, function(error){
+      files.thumbnail.filename;
+    fileSystem.rename(oldPathThumbnail, thumbnail, function (error) {
       //
     });
     var oldPathVideo = files.video.filepath;
-    var newPath = "./views/videos/"+ new Date().getTime() +"-"+files
-    .video.filename;
-    fileSystem.rename(oldPathVideo,newPath,function(error){
-   //
-      getUser(request.session.user.id,function(user){
+    var newPath = "./views/videos/" + new Date().getTime() + "-" + files
+      .video.filename;
+    fileSystem.rename(oldPathVideo, newPath, function (error) {
+      //
+      getUser(isLoggedIn, function (user) {
         var currentTime = new Date().getTime();
-        getVideoDurationInSeconds(newPath).then(function(duration){
+        getVideoDurationInSeconds(newPath).then(function (duration) {
           var hours = Math.floor(duration / 60 / 60);
           var minutes = Math.floor(duration / 60) - (hours * 60);
           var seconds = Math.floor(duration % 60);
           db.collection("videos").insertOne({
-            
-              "filePath":newPath,
-              "thumbnail":thumbnail,
-              "title":title,
-              "description":description,
-              "tags":tags,
-              "category":category,
-              "createdAt":currentTime,
-              "minutes":minutes,
-              "seconds":seconds,
-              "hours":hours,
-              "watch":currentTime,
-              "views":0,
-              "playlist":"",
-              "likers":[],
-              "dislikers":[],
-              "comments":[]
-          },function(error,data){
+
+            "filePath": newPath,
+            "thumbnail": thumbnail,
+            "title": title,
+            "description": description,
+            "tags": tags,
+            "category": category,
+            "createdAt": currentTime,
+            "minutes": minutes,
+            "seconds": seconds,
+            "hours": hours,
+            "watch": currentTime,
+            "views": 0,
+            "playlist": "",
+            "likers": [],
+            "dislikers": [],
+            "comments": []
+          }, function (error, data) {
 
           });
           result.redirect("/");
@@ -250,16 +254,16 @@ router.post("/upload-video",isLoggedIn,function(request,result){
   });
 });
 
-  router.get("/example",(req,res)=>{
-      res.render("example")
-  })
+router.get("/example", (req, res) => {
+  res.render("example")
+})
 
-  router.get("/putVideo", isLoggedIn,(req,res)=>{
-      res.render("course/putVideo")
-  })
+router.get("/putVideo", isLoggedIn, (req, res) => {
+  res.render("course/putVideo")
+})
 
 
-  // Init gfs
+// Init gfs
 let gfs;
 
 conn.once('open', () => {
@@ -289,7 +293,26 @@ const storage = new GridFsStorage({
 });
 const upload = multer({ storage });
 
-
+router.get("/showVideo" , isLoggedIn , (req,res)=>{
+  gfs.files.find().toArray((err, files) => {
+    // Check if files
+    if (!files || files.length === 0) {
+      res.render('course/showVideo', { files: false });
+    } else {
+      files.map(file => {
+        if (
+          file.contentType === 'video/mp4' ||
+          file.contentType === 'video/webm '
+        ) {
+          file.isVideo = true;
+        } else {
+          file.isVideo= false;
+        }
+      });
+      res.render('course/showVideo', { files: files });
+    }
+  });
+})
 
 // @route GET /
 // @desc Loads form
@@ -309,7 +332,7 @@ router.get('/putVideo', isLoggedIn, (req, res) => {
           file.isVideo = false;
         }
       });
-      res.render('course/putVideo', { files: files });
+      res.render('course/showVideo', { files: files });
     }
   });
 });
@@ -354,7 +377,7 @@ app.get('/files/:filename', (req, res) => {
 
 // @route GET /image/:filename
 // @desc Display Image
-app.get('/video/:filename', (req, res) => {
+app.get('/image/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -364,7 +387,7 @@ app.get('/video/:filename', (req, res) => {
     }
 
     // Check if image
-    if (file.contentType === 'video/mp4' || file.contentType === 'video/webm') {
+    if (file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  ) {
       // Read output to browser
       const readstream = gfs.createReadStream(file.filename);
       readstream.pipe(res);
@@ -388,14 +411,18 @@ app.delete('/files/:id', (req, res) => {
   });
 });
 
-router.get("/payment",(req,res)=>{
+router.get("/payment", (req, res) => {
   res.render("payment.ejs")
+})
+
+router.get("/myCourses", (req, res) => {
+  res.render("my-course.ejs")
 })
 
 
 
-function isLoggedIn(req,res,next){
-  if(req.isAuthenticated()){
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");

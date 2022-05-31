@@ -1,7 +1,39 @@
 <%- include ('../partials/header') %>
 
-<br><br><br><br>
 <style>
+     .containers {
+            width: 50%;
+            margin: 100px 150px;
+        }
+
+        img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: inline;
+
+        }
+
+        .row {
+            display: inline;
+        }
+
+        .containers p,button {
+            margin-left: 100px;
+        }
+
+        .dislike{
+            margin-left: 10px;
+        }
+
+        .reply-group {
+            margin-left: 100px;
+        }
+
+        h5 {
+            display: inline;
+            margin-left: 10px;
+        }
     .container{
         width: 100%;
         display: flex;
@@ -40,9 +72,9 @@
         display: inline;
     }
 
-    button{
+    .payment{
         margin-top: 20px;
-
+        text-decoration: none;
         padding: 5px;
         width: 50%;
         border: 1px solid #000;
@@ -69,9 +101,11 @@
     <div class="card">
         <img src="" alt="">
         <h3>35TL</h3>
-        <button>Satın Al</button>
+        <a href="/payment" class="payment">Satın al</a>
     </div>
 </div>
+
+
 
 
 
@@ -107,6 +141,30 @@
     </div>
     <div class="col-4"></div>
 </div>
+
+<div class="containers">
+    <h2 class="display-4 m-2">Öğrenci Geri Bildirimi</h2>
+    <h4 class="display-4 mb-3">Yorumlar</h4>
+    <div class="comment-group">
+        <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok">
+        <div class="row">
+            <h5>Selçuk Bey</h5>
+            <i>*****</i>
+        </div>
+        <p>Çok güzel bir kurstu herkese tavisye ederim.</p>
+        <p style="font-weight: 600;">Bu yorum faydalı mıydı ?</p>
+        <button class="like btn btn-primary btn-md mb-3">like</button>
+        <button class="dislike btn btn-danger btn-md mb-3">dislike</button>
+    </div>
+
+    <div class="reply-group ">
+        <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok">
+        <div class="row">
+            <h5>Atıl Samancıoğlu(Eğitmen)</h5>
+        </div>
+
+        <p>Bu güzel yorumlarınız için teşekkür ederim.</p>
+    </div>
 
 <script>
     CKEDITOR.replace( 'courseCurriculum' );

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if(files){ %>
+        <% files.forEach(function(file) { %>
+          <div class="card card-body mb-3">
+            <% if(file.isVideo) { %>
+                
+               
+              <img src="image/<%= file.filename %>" alt="yok">
+              <% } else { %>
+                
+                <%= file.filename %>
+                  <% } %>
+                    <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
+                      <button class="btn btn-danger btn-block mt-4">Delete</button>
+                    </form>
+          </div>
+          <% }) %>
+            <% } else { %>
+              <p>No files to show</p>
+              <% } %>
+</body>
+</html>
