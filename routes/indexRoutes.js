@@ -2,12 +2,14 @@ const express = require('express'),
   passport = require("passport"),
   User = require('../models/userModel'),
   Course = require('../models/courseModel'),
+  question = require('../models/question'),
   LocalStrategy = require("passport-local"),
   expressSession = require("express-session"),
+ 
 
 
   router = express.Router();
-
+  const {v4:uuidv4} = require("uuid");
 const bodyParser = require('body-parser');
 const path = require('path');
 const crypto = require('crypto');
@@ -22,12 +24,20 @@ const fileSystem = require('fs');
 const { getVideoDurationInSeconds } = require('get-video-duration');
 const { db } = require('../models/userModel');
 const app = express();
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+const { ExpressPeerServer } = require("peer");
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+});
+
+
 
 // Middleware
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
-
+app.use("/peerjs", peerServer);
 
 
 // Mongo URI
@@ -37,32 +47,25 @@ const mongoURI = 'mongodb://localhost:27017';
 const conn = mongoose.createConnection(mongoURI);
 
 
+router.get("/liveSession", (req,res)=>{
+  res.redirect(`liveSession/${uuidv4()}`);
+})
+
+router.get("/liveSession/:room", (req,res)=>{
+  res.render("liveSession", {roomId : req.params.room});
+})
 
 
+io.on("connection", (socket) => {
+  socket.on("join-room", (roomId, userId) => {
+    socket.join(roomId);
+    socket.to(roomId).broadcast.emit("user-connected", userId);
 
-
-
-// let data = [
-//     {
-//         courseTitle: "bir Title",
-//         courseDescription: "bir Description",
-//         courseAuthor: "bir Author",
-//         price: "bir fiyat"
-//     },
-//     {
-//         courseTitle: "ikinci gun Title",
-//         courseDescription: "iki Description",
-//         courseAuthor: "iki Author",
-//         price: "iki fiyat"
-//     },
-//     {
-//         courseTitle: "uc Title",
-//         courseDescription: "uc Description",
-//         courseAuthor: "uc Author",
-//         price: "uc fiyat"
-//     }
-
-// ]
+    socket.on("message", (message) => {
+      io.to(roomId).emit("createMessage", message);
+    });
+  });
+});
 
 
 
@@ -78,16 +81,20 @@ router.get("/", (req, res) => {
 
 });
 router.get("/profile", isLoggedIn, (req, res) => {
-  res.render('profile');
+  const name=req.user.username;
+  const idd=req.user._id;
+  res.render('profile',{name:name,idd:idd});
 });
 
 
-function getUser(id, callBack) {
-  User.findOne({
-    "_id": ObjectId(id)
-  }, function (error, user) {
-    callBack(user);
-  });
+function isTeacher(req,res,next){
+  const teacherboolean=req.user.teacher
+  console.log(teacherboolean)
+  if (req.isAuthenticated()&&teacherboolean) {
+    return next();
+  }else{
+    res.redirect("/")
+  }
 }
 
 router.get("/login", (req, res) => {
@@ -108,7 +115,8 @@ router.get("/register", (req, res) => {
 router.post("/register", (req, res) => {
   const newUser = new User({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    teacher:true
   });
   User.register(newUser, req.body.password, (err, user) => {
     if (err) {
@@ -153,7 +161,8 @@ router.post("/newCourse", (req, res, next) => {
     courseName: req.body.data.courseName,
     courseDescription: req.body.data.courseDescription,
     coursePrice: req.body.data.coursePrice,
-    courseCurriculum: req.body.data.courseCurriculum
+    courseCurriculum: req.body.data.courseCurriculum,
+    courseOwner:req.user._id
   }
 
   // let courseOwner = currentUser.username;
@@ -175,15 +184,6 @@ router.post("/newCourse", (req, res, next) => {
 });
 
 
-
-router.get("/testing", isLoggedIn, (req, res) => {
-  Course.find().then((foundCourses) => {
-    res.json(foundCourses);
-  }).catch((err) => {
-    console.log(err);
-    res.send(err);
-  })
-})
 router.get("/courses/:courseId", isLoggedIn, (req, res) => {
   Course.findById(req.params.courseId)
     .then((foundCourse) => {
@@ -195,8 +195,6 @@ router.get("/courses/:courseId", isLoggedIn, (req, res) => {
       res.send(err);
     })
 });
-
-
 router.get("/upload", isLoggedIn, (req, res) => {
   res.render("course/upload")
 })
@@ -258,19 +256,26 @@ router.get("/example", (req, res) => {
   res.render("example")
 })
 
-router.get("/putVideo", isLoggedIn, (req, res) => {
-  res.render("course/putVideo")
-})
+
 
 
 // Init gfs
 let gfs;
-
+//const conn = mongoose.connection;
+conn.once('open', () => {
+    // Add this line in the code
+    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: 'uploads'
+    });
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+});
+/*
 conn.once('open', () => {
   // Init stream
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('uploads');
-});
+});*/
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -284,7 +289,8 @@ const storage = new GridFsStorage({
         const filename = buf.toString('hex') + path.extname(file.originalname);
         const fileInfo = {
           filename: filename,
-          bucketName: 'uploads'
+          bucketName: 'uploads',
+          courseInfo:null
         };
         resolve(fileInfo);
       });
@@ -301,8 +307,8 @@ router.get("/showVideo" , isLoggedIn , (req,res)=>{
     } else {
       files.map(file => {
         if (
-          file.contentType === 'video/mp4' ||
-          file.contentType === 'video/webm '
+         // file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  
+          file.contentType === 'video/mp4'
         ) {
           file.isVideo = true;
         } else {
@@ -316,32 +322,47 @@ router.get("/showVideo" , isLoggedIn , (req,res)=>{
 
 // @route GET /
 // @desc Loads form
-router.get('/putVideo', isLoggedIn, (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      res.render('course/putVideo', { files: false });
-    } else {
-      files.map(file => {
-        if (
-          file.contentType === 'video/mp4' ||
-          file.contentType === 'video/webm '
-        ) {
-          file.isVideo = true;
-        } else {
-          file.isVideo = false;
-        }
-      });
-      res.render('course/showVideo', { files: files });
-    }
-  });
+router.get('/putVideo/:courseId', isLoggedIn,(req, res) => {
+const cid=req.params.courseId;
+  res.render('course/putVideo',{cid:cid});
 });
+
+
+router.post("/showVideo" , (req,res) => {
+  console.log(req.body.data)
+/*
+  var obj = {
+    questionTitle: req.body.data.questionTitle,
+    
+    questionBody: req.body.data.questionBody,
+   
+  }
+
+  // let courseOwner = currentUser.username;
+  // let courseOwner = "adsf"
+
+
+
+  question.create(obj)
+    .then((obj) => {
+      console.log(obj);
+      res.status(201).json(obj);
+
+    })
+    .catch((err) => {
+      console.log("====ERROR====");
+      console.log(err);
+      res.send(err);
+    });*/
+});
+
 
 // @route POST /upload
 // @desc  Uploads file to DB
-router.post('/putVideo', upload.single('file'), (req, res) => {
-  // res.json({ file: req.file });
-  res.redirect('/putVideo');
+router.post('/putVideo/:cid', upload.single('file'), (req, res) => {
+  const cid=req.params.cid;
+  console.log("okey",cid)
+  res.redirect("/showVideo");
 });
 
 // @route GET /files
@@ -362,7 +383,7 @@ router.get('/files', (req, res) => {
 
 // @route GET /files/:filename
 // @desc  Display single file object
-app.get('/files/:filename', (req, res) => {
+router.get('/files/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -377,7 +398,7 @@ app.get('/files/:filename', (req, res) => {
 
 // @route GET /image/:filename
 // @desc Display Image
-app.get('/image/:filename', (req, res) => {
+router.get('/video/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -387,10 +408,10 @@ app.get('/image/:filename', (req, res) => {
     }
 
     // Check if image
-    if (file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  ) {
+    if ( file.contentType === 'video/mp4' ) {
       // Read output to browser
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
+      const readStream = gridfsBucket.openDownloadStream(file._id);
+    readStream.pipe(res);
     } else {
       res.status(404).json({
         err: 'Not an image'
@@ -415,8 +436,16 @@ router.get("/payment", (req, res) => {
   res.render("payment.ejs")
 })
 
-router.get("/myCourses", (req, res) => {
-  res.render("my-course.ejs")
+router.get("/myCourses", isLoggedIn,(req, res) => {
+  const cu=req.user._id;
+  Course.find({courseOwner:cu}, (err, myCourses) => {
+    if (err) {
+      console.log("====ERROR====")
+      console.log(err);
+    } else {
+      res.render("my-course", { myCourses: myCourses })
+    }
+  });
 })
 
 
@@ -427,6 +456,7 @@ function isLoggedIn(req, res, next) {
   }
   res.redirect("/login");
 }
+
 
 module.exports = router;
 

@@ -32,14 +32,26 @@ saveUninitialized:false
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
+passport.serializeUser((user,done)=>{
+        done(null,user.id);
+});
+passport.deserializeUser((userId,done)=>{
+        User.findById(userId)
+        .then((user)=>{
+                done(null,user);
+        })
+        .catch(err=> done(err))
+});
 
 //currentUser
 app.use((req,res,next)=>{
-        res.locals.currentUser=req.user;
+
+       res.locals.currentUser=req.user;
         next();
 });
+
+
 
 
 

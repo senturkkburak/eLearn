@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .info-box{
+            width: 540px;
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            background-color: #fff;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .info-box .info header{
+            height: 40px;
+            width: 100%;
+            border-bottom: 1px solid lightgray;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 10px 35px;
+        }
+        .info-list p{
+            padding: 15px 35px;
+        }
+
+        .info-list p:last-child{
+            border-bottom: 1px solid lightgray;
+        }
+        .buttons{
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 17px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .buttons #exit{
+            color: blue;
+            background-color: #fff;
+            border: 1px solid blue;
+            margin-right: 20px;
+        }
+        .buttons #continue{
+            color: #fff;
+            background-color: blue;
+        }
+
+    </style>
+</head>
+<body>
+    
+<div class="info-box">
+    <div class="info-header">
+        <h3>Some Rules Of The Quiz</h3>
+    </div>
+    <div class="info-list">
+        <p>1. You will have <span>15 seconds</span> per each question</p>
+        <p>2. You will have <span>15 seconds</span> per each question</p>
+        <p>3. You will have <span>15 seconds</span> per each question</p>
+        <p>4. You will have <span>15 seconds</span> per each question</p>
+        <p>5. You will have <span>15 seconds</span> per each question</p>
+    </div>
+    <div class="buttons">
+        <button id="exit">Exit Quiz</button>
+        <button id="continue">Continue</button>
+    </div>
+</div>
+</body>
+</html>
+
