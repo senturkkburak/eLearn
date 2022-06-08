@@ -196,30 +196,7 @@ const cidd=req.params.courseId
     //   res.send(err);
     // })
 });
-router.get("/showVideo/:courseId",isLoggedIn,(req,res)=>{
-const idcompare=req.params.courseId;
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      res.render('course/showVideo', { files: false });
-    } else {
-      files.map(file => {
-        if (
-         // file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  
-          file.contentType === 'video/mp4' && file.courseInfo==idcompare
-        ) {
-          file.isVideo = true;
-        } else {
-          file.isVideo= false;
-        }
-        
-      });
-      res.render('course/showVideo', { files: files});
-    }
-    
-  });
 
-});
 
 
 
@@ -348,6 +325,32 @@ router.get("/showVideo" , isLoggedIn , (req,res)=>{
     }
   });
 })
+router.get("/showVideo/:courseId",isLoggedIn,(req,res)=>{
+  const idcompare=req.params.courseId;
+    gfs.files.find({courseInfo:idcompare}).toArray((err, files) => {
+      // Check if files
+      if (!files || files.length === 0) {
+        res.render('course/showVideo', { files: false });
+      } else {
+        files.map(file => {
+          if (
+           // file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  
+            file.contentType === 'video/mp4'
+          ) {
+            file.isVideo = true;
+          } else {
+            file.isVideo= false;
+          }
+          
+        });
+        res.render('course/showVideo', { files: files});
+      }
+      
+    });
+  
+  });
+
+
 
 // @route GET /
 // @desc Loads form
