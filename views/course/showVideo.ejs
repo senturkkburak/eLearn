@@ -31,13 +31,22 @@
     <% if(files){ %>
       <% files.forEach(function(file) { %>
         <div class="container-fluid mt-5 mx-2">
-          <% if(file.isVideo) { %>
+          
 
+          <% if(file.isVideo ) { %>
+          <% console.log({file}) %>
             <video controls>
               <source src="video/<%= file.filename%>" type="video/mp4">
               <source src="movie.ogg" type="video/ogg">
               Your browser does not support the video tag.
             </video>
+
+            <div>
+
+              <h4><%= file.filename %> </h4>
+            </div>
+            
+            
 
             <!--<img src="image/<%= file.filename %>" alt="yok">-->
             <% } else { %>

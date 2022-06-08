@@ -20,7 +20,7 @@ const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const formidable = require('formidable');
-const fileSystem = require('fs');
+const fs = require('fs');
 const { getVideoDurationInSeconds } = require('get-video-duration');
 const { db } = require('../models/userModel');
 const app = express();
@@ -185,72 +185,100 @@ router.post("/newCourse", (req, res, next) => {
 
 
 router.get("/courses/:courseId", isLoggedIn, (req, res) => {
-  Course.findById(req.params.courseId)
+const cidd=req.params.courseId
+  Course.findById(cidd)
     .then((foundCourse) => {
-      res.render("course/showCourse", { foundCourse: foundCourse });
+      res.render("course/showCourse", { foundCourse: foundCourse});
     })
-    .catch((err) => {
-      console.log("====ERROR====")
-      console.log(err);
-      res.send(err);
-    })
+    // .catch((err) => {
+    //   console.log("====ERROR====")
+    //   console.log(err);
+    //   res.send(err);
+    // })
 });
+router.get("/showVideo/:courseId",isLoggedIn,(req,res)=>{
+const idcompare=req.params.courseId;
+  gfs.files.find().toArray((err, files) => {
+    // Check if files
+    if (!files || files.length === 0) {
+      res.render('course/showVideo', { files: false });
+    } else {
+      files.map(file => {
+        if (
+         // file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  
+          file.contentType === 'video/mp4' && file.courseInfo==idcompare
+        ) {
+          file.isVideo = true;
+        } else {
+          file.isVideo= false;
+        }
+        
+      });
+      res.render('course/showVideo', { files: files});
+    }
+    
+  });
+
+});
+
+
+
 router.get("/upload", isLoggedIn, (req, res) => {
   res.render("course/upload")
 })
-router.post("/upload-video", isLoggedIn, function (request, result) {
-  const formData = new formidable.IncomingForm();
-  formData.maxFileSize = 1000 * 1024 * 1024;
-  formData.parse(request, function (error, fields, files) {
-    var title = fields.title;
-    var description = fields.description;
-    var tags = fields.tags;
-    var category = fields.category;
+// router.post("/upload-video", isLoggedIn, function (request, result) {
+//   const formData = new formidable.IncomingForm();
+//   formData.maxFileSize = 1000 * 1024 * 1024;
+//   formData.parse(request, function (error, fields, files) {
+//     var title = fields.title;
+//     var description = fields.description;
+//     var tags = fields.tags;
+//     var category = fields.category;
 
-    var oldPathThumbnail = files.thumbnail.filepath;
-    var thumbnail = "./views/thumbnails/" + new Date().getTime() + "-" +
-      files.thumbnail.filename;
-    fileSystem.rename(oldPathThumbnail, thumbnail, function (error) {
-      //
-    });
-    var oldPathVideo = files.video.filepath;
-    var newPath = "./views/videos/" + new Date().getTime() + "-" + files
-      .video.filename;
-    fileSystem.rename(oldPathVideo, newPath, function (error) {
-      //
-      getUser(isLoggedIn, function (user) {
-        var currentTime = new Date().getTime();
-        getVideoDurationInSeconds(newPath).then(function (duration) {
-          var hours = Math.floor(duration / 60 / 60);
-          var minutes = Math.floor(duration / 60) - (hours * 60);
-          var seconds = Math.floor(duration % 60);
-          db.collection("videos").insertOne({
+//     var oldPathThumbnail = files.thumbnail.filepath;
+//     var thumbnail = "./views/thumbnails/" + new Date().getTime() + "-" +
+//       files.thumbnail.filename;
+//     fileSystem.rename(oldPathThumbnail, thumbnail, function (error) {
+//       //
+//     });
+//     var oldPathVideo = files.video.filepath;
+//     var newPath = "./views/videos/" + new Date().getTime() + "-" + files
+//       .video.filename;
+//     fileSystem.rename(oldPathVideo, newPath, function (error) {
+//       //
+//       getUser(isLoggedIn, function (user) {
+//         var currentTime = new Date().getTime();
+//         getVideoDurationInSeconds(newPath).then(function (duration) {
+//           var hours = Math.floor(duration / 60 / 60);
+//           var minutes = Math.floor(duration / 60) - (hours * 60);
+//           var seconds = Math.floor(duration % 60);
+//           db.collection("videos").insertOne({
 
-            "filePath": newPath,
-            "thumbnail": thumbnail,
-            "title": title,
-            "description": description,
-            "tags": tags,
-            "category": category,
-            "createdAt": currentTime,
-            "minutes": minutes,
-            "seconds": seconds,
-            "hours": hours,
-            "watch": currentTime,
-            "views": 0,
-            "playlist": "",
-            "likers": [],
-            "dislikers": [],
-            "comments": []
-          }, function (error, data) {
+//             "filePath": newPath,
+//             "thumbnail": thumbnail,
+//             "title": title,
+//             "description": description,
+//             "tags": tags,
+//             "category": category,
+//             "createdAt": currentTime,
+//             "minutes": minutes,
+//             "seconds": seconds,
+//             "hours": hours,
+//             "watch": currentTime,
+//             "views": 0,
+//             "playlist": "",
+//             "likers": [],
+//             "dislikers": [],
+//             "comments": []
+//           }, function (error, data) {
 
-          });
-          result.redirect("/");
-        });
-      });
-    });
-  });
-});
+//           });
+//           result.redirect("/");
+//         });
+//       });
+//     });
+//   });
+// });
 
 router.get("/example", (req, res) => {
   res.render("example")
@@ -287,10 +315,11 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         const filename = buf.toString('hex') + path.extname(file.originalname);
+        const courseInfo="test";
         const fileInfo = {
           filename: filename,
           bucketName: 'uploads',
-          courseInfo:null
+          courseInfo:courseInfo
         };
         resolve(fileInfo);
       });
@@ -361,8 +390,14 @@ router.post("/showVideo" , (req,res) => {
 // @desc  Uploads file to DB
 router.post('/putVideo/:cid', upload.single('file'), (req, res) => {
   const cid=req.params.cid;
-  console.log("okey",cid)
-  res.redirect("/showVideo");
+  const videoid=req.file.filename;
+
+  gfs.files.findOne({ filename: videoid }).then(() => gfs.files.updateOne(
+    {  filename: videoid},
+    { $set: { courseInfo: cid } }))
+  console.log("okey",cid,videoid)
+
+  res.redirect('/')
 });
 
 // @route GET /files
