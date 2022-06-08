@@ -98,11 +98,11 @@
     <div class="payment-container">
         <h2>Confirm Your Payment</h2>
         <div class="row-1">
-            <input type="text" placeholder="owner" name="owner" id="owner" autofocus>
-            <input type="text" placeholder="CVV" id="cvv" name="cvv">
+            <input type="text" placeholder="owner" name="owner" id="owner" autofocus required>
+            <input type="text" placeholder="CVV" id="cvv" name="cvv" required>
         </div>
         <div class="row-2">
-            <input type="text" id="card-number" placeholder="card number" name="card-number">
+            <input type="text" id="card-number" placeholder="card number" name="card-number" required>
         </div>
         <div class="row-3">
             <div class="row-3-first">
@@ -142,7 +142,7 @@
             </div>
         </div>
         <div class="row-4">
-            <input type="submit" value="CONFIRM">
+            <input type="submit" value="CONFIRM" onclick="location.href='success/<%=courseId %>';">
         </div>
         <p>alphan</p>
         

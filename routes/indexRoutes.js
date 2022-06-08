@@ -491,9 +491,19 @@ app.delete('/files/:id', (req, res) => {
   });
 });
 
-router.get("/payment", (req, res) => {
-  res.render("payment.ejs")
+router.get("/payment/:courseId", (req, res) => {
+  const courseId=req.params.courseId;
+  res.render("payment.ejs",{courseId:courseId})
 })
+router.get("/payment/success/:courseId", (req,res)=>{
+    const courseId=req.params.courseId;
+    const currentU=req.user._id;
+    User.findOne({ _id: currentU }).then(() => User.updateOne(
+      {  _id: currentU},
+      { $push: { purchased: courseId } }))
+      res.redirect("/")
+  
+});
 
 router.get("/myCourses", isLoggedIn,(req, res) => {
   const cu=req.user._id;
