@@ -81,16 +81,15 @@ router.get("/", (req, res) => {
 
 });
 router.get("/profile", isLoggedIn, (req, res) => {
-  const name=req.user.username;
-  const idd=req.user._id;
-  res.render('profile',{name:name,idd:idd});
+  const userProfile=req.user;
+  res.render('profile',{userProfile:userProfile});
 });
 
 
 function isTeacher(req,res,next){
-  const teacherboolean=req.user.teacher
+  const teacherboolean=req.user.role
   console.log(teacherboolean)
-  if (req.isAuthenticated()&&teacherboolean) {
+  if (req.isAuthenticated()&&teacherboolean==1) {
     return next();
   }else{
     res.redirect("/")
@@ -114,9 +113,11 @@ router.get("/register", (req, res) => {
 })
 router.post("/register", (req, res) => {
   const newUser = new User({
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
     username: req.body.username,
     password: req.body.password,
-    teacher:true
+    role:'0'
   });
   User.register(newUser, req.body.password, (err, user) => {
     if (err) {
@@ -147,7 +148,7 @@ router.get("/signout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
-router.get("/newCourse", isLoggedIn, (req, res) => {
+router.get("/newCourse", isLoggedIn,isTeacher, (req, res) => {
   res.render('course/newCourse');
 })
 
@@ -196,8 +197,8 @@ router.get("/courses/:courseId", isLoggedIn, (req, res) => {
 const cidd=req.params.courseId
   Course.findById(cidd)
     .then((foundCourse) => {
-      res.render("course/showCourse", { foundCourse: foundCourse});
-    })
+      res.render("course/showCourse", { foundCourse: foundCourse});      
+    }) 
     // .catch((err) => {
     //   console.log("====ERROR====")
     //   console.log(err);
@@ -375,7 +376,7 @@ router.get("/showVideo/:courseId",isLoggedIn,(req,res)=>{
 
 // @route GET /
 // @desc Loads form
-router.get('/putVideo/:courseId', isLoggedIn,(req, res) => {
+router.get('/putVideo/:courseId', isLoggedIn,isTeacher,(req, res) => {
 const cid=req.params.courseId;
   res.render('course/putVideo',{cid:cid});
 });
@@ -434,7 +435,7 @@ router.post('/putVideo/:cid', upload.single('file'), (req, res) => {
     { $set: { courseInfo: cid } }))
   console.log("okey",cid,videoid)
 
-  res.redirect('/')
+  res.redirect('/putVideo/<%= cid %>')
 });
 
 // @route GET /files
@@ -544,46 +545,9 @@ router.get("/payment/success/:courseId", (req,res)=>{
         
       }
     });
-
-    User.findOne({_id:currentU}, (err, purchasedCourses) => {
-      if (err) {
-        console.log("====ERROR====")
-        console.log(err);
-      } else {
-        res.render("my-course", { purchasedCourses: purchasedCourses })
-      }
-    });
-  
+    res.redirect("/myCourses")
 });
-// router.get("/payment/success/:courseId", (req,res)=>{
-//   const courseId=req.params.courseId;
-//   const currentU=req.user._id;
-//   Course.find({_id:courseId}, (err, foundCourse) => {
-//     if (err) {
-//       console.log("====ERROR====")
-//       console.log(err);
-//     } else {
-      
-//     User.findOne({ _id: currentU }).then(() => User.updateOne(
-//     {  _id: currentU},
-//     { $push: { purchased: foundCourse } }))
-      
-//     }
 
-    
-
-//   });
-
-//   User.findOne({_id:currentU}, (err, purchasedCourses) => {
-//     if (err) {
-//       console.log("====ERROR====")
-//       console.log(err);
-//     } else {
-//       res.render("my-course", { purchasedCourses: purchasedCourses })
-//     }
-//   });
-
-// });
 
 router.get("/myCourses", isLoggedIn,(req, res) => {
   const cu=req.user._id;
