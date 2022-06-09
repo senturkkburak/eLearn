@@ -1,14 +1,61 @@
 <%- include ('./partials/header') %>
+
+
+
+
+<style>
+    .containers{
+        width: 100%;
+        height: 15%;
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+
+    }
+    .contents{
+        width: 60%;
+        margin: 100px;
+        display: flex; 
+        flex-direction: row;
+    }
+
+    .cards{
+        width: 200px;
+        height: 220px;
+        border:1px solid rgb(184, 184, 204);
+        
+        margin-right: 60px;
+    }
+    .cards:hover{
+        box-shadow:1px 1px 1px rgb(184, 184, 204) ;
+    }
+
+    h5{
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+    }
+</style>
+
+<div class="containers text-center">
+    <h2 class="display-5 py-4">My Courses</h2>
+</div>
 <div class="container mt-5">
-    <h1>Welcome , Burak Şentürk </h1>
-    <h2 class="mt-5">My Courses</h2>
+    <h1>Welcome</h1>
     <div class="card">
         <img src="" alt="">
         
     </div>
 </div>
-
-
-
+<% myCourses.forEach( (course)=>{ %>
+<div class="contents">
+    <div class="cards">
+        <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok" width="200" height="125" >
+        <h5><%=   course.courseName  %></h5>
+        <h5><%=   course.courseDescription  %></h5>
+        <p><%=   course.coursePrice  %> $</p>
+        <a href="/teacherCourses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
+    </div>
+</div>
+<% });  %>
 
 <%- include ('./partials/footer') %>

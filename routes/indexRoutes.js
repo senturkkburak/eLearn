@@ -129,13 +129,14 @@ router.post("/register", (req, res) => {
     });
   })
 })
-router.get("/teacher", isLoggedIn, (req, res) => {
-  Course.find({}, (err, foundCourses) => {
+router.get("/teacher", isLoggedIn,isTeacher, (req, res) => {
+  const cu=req.user._id;
+  Course.find({courseOwner:cu}, (err, myCourses) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      res.render("teacher", { foundCourses: foundCourses })
+      res.render("teacher", { myCourses: myCourses })
     }
   });
 })
@@ -531,24 +532,71 @@ router.get("/payment/:courseId", (req, res) => {
 router.get("/payment/success/:courseId", (req,res)=>{
     const courseId=req.params.courseId;
     const currentU=req.user._id;
-    User.findOne({ _id: currentU }).then(() => User.updateOne(
+    Course.findOne({_id:courseId}, (err, foundCourse) => {
+      if (err) {
+        console.log("====ERROR====")
+        console.log(err);
+      } else {
+        
+      User.findOne({ _id: currentU }).then(() => User.updateOne(
       {  _id: currentU},
-      { $push: { purchased: courseId } }))
-      res.redirect("/")
+      { $push: { purchased: foundCourse } }))
+        
+      }
+    });
+
+    User.findOne({_id:currentU}, (err, purchasedCourses) => {
+      if (err) {
+        console.log("====ERROR====")
+        console.log(err);
+      } else {
+        res.render("my-course", { purchasedCourses: purchasedCourses })
+      }
+    });
   
 });
+// router.get("/payment/success/:courseId", (req,res)=>{
+//   const courseId=req.params.courseId;
+//   const currentU=req.user._id;
+//   Course.find({_id:courseId}, (err, foundCourse) => {
+//     if (err) {
+//       console.log("====ERROR====")
+//       console.log(err);
+//     } else {
+      
+//     User.findOne({ _id: currentU }).then(() => User.updateOne(
+//     {  _id: currentU},
+//     { $push: { purchased: foundCourse } }))
+      
+//     }
+
+    
+
+//   });
+
+//   User.findOne({_id:currentU}, (err, purchasedCourses) => {
+//     if (err) {
+//       console.log("====ERROR====")
+//       console.log(err);
+//     } else {
+//       res.render("my-course", { purchasedCourses: purchasedCourses })
+//     }
+//   });
+
+// });
 
 router.get("/myCourses", isLoggedIn,(req, res) => {
   const cu=req.user._id;
-  Course.find({courseOwner:cu}, (err, myCourses) => {
+  User.findOne({_id:cu}, (err, purchasedCourses) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      res.render("my-course", { myCourses: myCourses })
+      res.render("my-course", { purchasedCourses: purchasedCourses })
     }
   });
-})
+  
+});
 
 router.get("/quiz" , (req,res) =>{
   res.render("quiz.ejs");
