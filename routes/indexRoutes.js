@@ -130,7 +130,14 @@ router.post("/register", (req, res) => {
   })
 })
 router.get("/teacher", isLoggedIn, (req, res) => {
-  res.render('teacher');
+  Course.find({}, (err, foundCourses) => {
+    if (err) {
+      console.log("====ERROR====")
+      console.log(err);
+    } else {
+      res.render("teacher", { foundCourses: foundCourses })
+    }
+  });
 })
 router.get("/categories", isLoggedIn, (req, res) => {
   res.send("Category Page");
@@ -196,6 +203,19 @@ const cidd=req.params.courseId
     //   res.send(err);
     // })
 });
+router.get("/teacherCourses/:courseId", isLoggedIn, (req, res) => {
+const cidd=req.params.courseId
+  Course.findById(cidd)
+    .then((foundCourse) => {
+      res.render("course/teacherCourse", { foundCourse: foundCourse});
+    })
+    // .catch((err) => {
+    //   console.log("====ERROR====")
+    //   console.log(err);
+    //   res.send(err);
+    // })
+});
+
 
 
 
@@ -350,7 +370,7 @@ router.get("/showVideo/:courseId",isLoggedIn,(req,res)=>{
   
   });
 
-
+//put video yaparken eklediğimiz kursun da id sini çekmeye çalışmış burda
 
 // @route GET /
 // @desc Loads form
@@ -359,6 +379,19 @@ const cid=req.params.courseId;
   res.render('course/putVideo',{cid:cid});
 });
 
+router.get('/addQuiz/:courseId', isLoggedIn,(req, res) => {
+
+const cidd=req.params.courseId
+  Course.findById(cidd)
+    .then((foundCourse) => {
+      res.render("course/addQuiz",{cid:cidd} , { foundCourse: foundCourse});
+    })
+    // .catch((err) => {
+    //   console.log("====ERROR====")
+    //   console.log(err);
+    //   res.send(err);
+    // })
+});
 
 router.post("/showVideo" , (req,res) => {
   console.log(req.body.data)
@@ -517,7 +550,9 @@ router.get("/myCourses", isLoggedIn,(req, res) => {
   });
 })
 
-
+router.get("/quiz" , (req,res) =>{
+  res.render("quiz.ejs");
+})
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {

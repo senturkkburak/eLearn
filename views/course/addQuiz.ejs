@@ -1,0 +1,73 @@
+<%- include ('../partials/header') %>
+    <div class="container d-flex flex-row">
+
+        <div class="w-75 m-5 ">
+            <h3 class="mb-3 p-2 border-bottom">Add Quiz</h3>
+            <form action="/addQuiz/<%=foundCourse._id%>">
+              
+                
+                <div class="container-fluid questionContainer  border border-primary p-3">
+                    <h3 class="text-center display-5">Question</h3>
+                    <div class="mb-3">
+
+                        <label for="questionName">Question Name</label>
+                        <input type="text" id="questionName" class="form-control" placeholder="Enter question itself"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="firstOption">First Option</label>
+                        <input type="text" id="firstOption" class="form-control" placeholder=" First Option"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="secondoption">Second option</label>
+                        <input type="text" id="secondoption" class="form-control" placeholder=" Second option"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="thirdoption">Third option</label>
+                        <input type="text" id="thirdoption" class="form-control" placeholder="Third option"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="fourthoption">Fourth option</label>
+                        <input type="text" id="fourthoption" class="form-control" placeholder="Fourth option"
+                            autocomplete="off" required>
+                    </div>
+
+
+                </div>
+               <div class="buttons d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-primary mt-4" id="createQuestions">Soruları Oluştur</button>
+
+
+                <button id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</button>
+               </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+         // Divi oluşuturuyoruz ama içindeki kodlarla doldurmaya ihtiyacımız var.
+        /* 
+         var b = document.querySelector(".questionContainer");
+        
+         document.querySelector("#createQuestions").onclick = ()=>{
+           document.querySelector(".container").innerHTML += "<div>merhaba</div><h2>selamlr</h2>";
+         }*/
+       $(document).ready(function(){
+        $("#createQuestions").click(function(){
+            $( ".questionContainer").insertAfter( $( ".questionContainer" ) );
+           });
+       });
+           
+       
+        
+       
+    </script>
+
+    <%- include ('../partials/footer') %>

@@ -1,74 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://kit.fontawesome.com/b2df9fdb37.js" crossorigin="anonymous"></script>
     <style>
-        .info-box{
-            width: 540px;
-            position: absolute;
-            top: 50%;
-            right: 50%;
+       
+
+        body {
+            background: blue;
+            font-family: 'Poppins', sans-serif;
+        }
+        .question-box{
+            opacity: 0;
+            pointer-events: auto;
+            transform: translate(-50% , -50%) scale(0.9);
             background-color: #fff;
             border-radius: 5px;
             border: none;
+            width: 540px;
+            margin: 200px auto;
+
         }
 
-        .info-box .info header{
-            height: 40px;
-            width: 100%;
-            border-bottom: 1px solid lightgray;
+        .question-header{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 10px 20px;
+            
+        }
+        .question-header p{
+            background-color: aqua;
+            padding: 10px;
+            color: blue;
+            border-radius: 5px;
+            border: none;
+        }
+        .question-header span{
+            padding: 0 10px;
+            background-color: black;
+            color: #fff;
+        }
+        .question-title{
+            border-top: 1px solid lightgray;
             font-size: 24px;
             font-weight: 600;
             padding: 10px 35px;
         }
-        .info-list p{
+        .question-options{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .question-options .option{
+            padding: 10px 30px;
+            border: 1px solid lightblue;
+            border-radius: 5px;
+            background-color: aqua;
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-bottom: 25px;
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .question-options .option:last-child{
+            border-bottom: 1px solid lightgray;
+        }
+        .question-info p{
+            padding: 20px 35px;
+        }
+
+
+        .complete-quiz-box{
+            font-family: 'Poppins','sans-serif';
+            width: 540px;
+            margin: 200px auto;
+            border-radius: 5px;
+            border: none;
+            background-color: #fff;
+        }
+
+        .complete-quiz-box p{
+            font-weight: 600;
+            font-size: 24px;
+            padding: 0 100px;
+        }
+        .buttons{
+            display: flex;
+            justify-content: center;
+          
+          
+        }
+        .buttons button{
+            cursor: pointer;
+            font-family: 'Poppins','sans-serif';
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;  
+            font-size: 17px;
+        }
+        .buttons #replay{
+            color: #fff;
+            background-color: blue;
+            border: none;
+            margin-right: 20px;
+            
+        }
+        .buttons #quit{
+            border: 1px solid blue;
+            color: blue;
+            background-color: #fff;
+        }
+        i{
+            margin-left: 220px;
+            font-size: 100px;
+            color: #007bff;
+        }
+       
+
+        .info-box {
+            opacity: 0;
+            pointer-events: auto;
+            transform: translate(-50% , -50%) scale(0.9);
+            width: 540px;
+            margin: 10rem 30rem;
+            background-color: #fff;
+            border-radius: 5px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .question-box.activeQuiz{
+            z-index: 5;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50% , -50%) scale(1);
+        }
+
+        .info-box.activeInfo
+        {
+            z-index: 5;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50% , -50%) scale(1);
+        }
+
+        .info-box .info-header h3{
+            height: 40px;
+            width: 100%;
+            padding: 10px 35px;    
+            font-size: 24px;
+            font-weight: 600;
+            
+        }
+        .info-list p:first-child{
+            border-top: 1px solid lightgray;
+        }
+
+        .info-list p {
             padding: 15px 35px;
         }
 
-        .info-list p:last-child{
+        
+
+        .info-list p:last-child {
+            margin-bottom: 15px;
             border-bottom: 1px solid lightgray;
         }
-        .buttons{
-            padding: 8px 15px;
-            border-radius: 5px;
+
+        .buttons {
+            margin: 15px;
+            margin-bottom: 10px;
             font-size: 17px;
             display: flex;
             justify-content: flex-end;
         }
-        .buttons #exit{
+
+        .buttons button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            margin: 15px;
+        }
+
+        .buttons #exit {
             color: blue;
             background-color: #fff;
             border: 1px solid blue;
-            margin-right: 20px;
+
         }
-        .buttons #continue{
+
+        .buttons #continue {
             color: #fff;
             background-color: blue;
+            border: none;
         }
 
+        
+        #start-btn{
+            cursor: pointer;
+            margin: 40px 720px;
+            font-size: 17px;
+            font-family: 'Poppins';
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+            color: blue;
+            padding: 8px 15px;
+        }
     </style>
 </head>
+
 <body>
     
-<div class="info-box">
-    <div class="info-header">
-        <h3>Some Rules Of The Quiz</h3>
-    </div>
-    <div class="info-list">
-        <p>1. You will have <span>15 seconds</span> per each question</p>
-        <p>2. You will have <span>15 seconds</span> per each question</p>
-        <p>3. You will have <span>15 seconds</span> per each question</p>
-        <p>4. You will have <span>15 seconds</span> per each question</p>
-        <p>5. You will have <span>15 seconds</span> per each question</p>
-    </div>
-    <div class="buttons">
-        <button id="exit">Exit Quiz</button>
-        <button id="continue">Continue</button>
-    </div>
-</div>
-</body>
-</html>
+        <button id="start-btn">Start</button>
+   
 
+    <div class="question-box">
+        <div class="question-header">
+            <h3>Awesome Quiz Application</h3>
+            <p>Time Left <span>15</span></p>
+        </div>
+        <div class="question-title">
+            <p>1. What does XML stand for</p>
+        </div>
+        <div class="question-options">
+            <div class="option">extensible markup language<i class="fa-solid fa-check"></i></div>
+            
+            <div class="option">executable markup language<i class="fa-solid fa-xmark"></i></div>
+            
+            <div class="option">extra markup language<i class="fa-solid fa-xmark"></i></div>
+            <div class="option">examine markup language<i class="fa-solid fa-xmark"></i></div>
+        </div>
+        <div class="question-info">
+            <p><span>2</span> of <span>5</span> Questions</p>
+        </div>
+    </div>
+
+    <div class="complete-quiz-box">
+        <i class="fa-solid fa-crown"></i>
+        <p>You've completed the Quiz! nad nice , you got 2 out of 5</p>
+        <div class="buttons">
+            <button id="replay">Replay Quiz</button>
+            <button id="quit">Quit Quiz</button>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-header">
+            <h3>Some Rules Of The Quiz</h3>
+        </div>
+        <div class="info-list">
+            <p>1. You will have <span>15 seconds</span> per each question</p>
+            <p>2. You will have <span>15 seconds</span> per each question</p>
+            <p>3. You will have <span>15 seconds</span> per each question</p>
+            <p>4. You will have <span>15 seconds</span> per each question</p>
+            <p>5. You will have <span>15 seconds</span> per each question</p>
+        </div>
+        <div class="buttons">
+            <button id="exit">Exit Quiz</button>
+            <button id="continue">Continue</button>
+        </div>
+    </div>
+
+
+</body>
+
+<script >
+const start_btn = document.querySelector("#start-btn");
+const info_box = document.querySelector(".info-box");
+const exit_btn = document.querySelector("#exit");
+const question_box = document.querySelector(".question-box")
+const continue_btn = document.querySelector("#continue")
+
+start_btn.onclick = () =>{
+    info_box.classList.add("activeInfo");
+    console.log(info_box.classList);
+
+}
+
+exit_btn.onclick = () =>{
+    info_box.classList.remove("activeInfo");
+}
+
+continue_btn.onclick = () =>{
+    info_box.classList.remove("activeInfo");
+    question_box.classList.add("activeQuiz");
+}
+
+
+</script>
+</html>
