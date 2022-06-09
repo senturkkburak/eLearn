@@ -28,36 +28,25 @@
   </head>
 
   <body>
-    <% if(files){ %>
-      <% files.forEach(function(file) { %>
-        <div class="container-fluid mt-5 mx-2">
-          
-
-          <% if(file.isVideo ) { %>
-          <% console.log({file}) %>
+    
             <video controls>
-              <source src="<%=file.courseInfo%>/video/<%= file.filename%>" type="video/mp4">
+              <source src="/video/<%= videoNam%>" type="video/mp4">
               <!-- <source src="movie.ogg" type="video/ogg"> -->
               Your browser does not support the video tag.
             </video>
 
             <div>
 
-              <h4><%= file.filename %> </h4>
+              <h4><%= videoNam %> </h4>
             </div>
             
             
 
-            <!--<img src="image/<%= file.filename %>" alt="yok">-->
-            <% } else { %>
-
-              <% } %>
+            
+          
 
         </div>
-        <% }) %>
-          <% } else { %>
-            <p>No files to show</p>
-            <% } %>
+       
 
               <div class="questionContainer m-5">
                 <h3 class="display-6">Bu kurstaki sorular</h3>

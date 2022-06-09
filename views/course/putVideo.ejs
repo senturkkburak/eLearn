@@ -5,21 +5,58 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Video</title>
 </head>
-<body><%= console.log({cid}) %>
+<body>
     <form action="/putVideo/<%= cid %>" method="POST" enctype="multipart/form-data">
         <div class="custom-file mb-3">
+          <input type="text" name="videoN" id="videoN" placeholder="Video Title">
+          <br><br>
           <input type="file" name="file" id="file" class="custom-file-input">
           <label for="file" class="custom-file-label">Choose File</label>
         </div>
-        <input type="submit" value="Submit" class="btn btn-primary btn-block">
+        <input type="submit" value="Submit" id="putVideoButton"class="btn btn-primary btn-block" onclick="location.href='/putVideo/<%= cid %>';">
       </form>
       <div class="card">
         
         <img src="" alt="">
-        <a href="/teacher" class="payment">Done</a>
+        <a href="/courses/<%= cid %>" class="payment">Done</a>
     </div>
+    <script>
+
+
+      // $(document).ready(function () {
+      //     $("#putVideoButton").click(function () {
+
+      //         if (($.isNumeric($("#coursePrice").val()) == true) && ($("#coursePrice").val() > 0)) {
+
+      //             var courseName = $("#courseName").val();
+      //             var courseDescription = $("#courseDescription").val();
+      //             var coursePrice = $("#coursePrice").val();
+      //             var courseCurriculum = CKEDITOR.instances.courseCurriculum.getData();
+      //             let data = {
+      //                 courseName: courseName,
+      //                 courseDescription: courseDescription,
+      //                 coursePrice: coursePrice,
+      //                 courseCurriculum: courseCurriculum,
+                      
+      //             }
+
+      //             $.post("newCourse", { data: data })
+      //                 .then(function (addedCourse) {
+      //                     console.log(addedCourse)
+      //                 });
+
+
+      //         }
+
+      //     });
+      // });
+
+
+
+
+  </script>
 </body>
 </html>
 

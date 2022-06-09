@@ -157,8 +157,8 @@
                 if ($("#owner").val()!="" && $("#owner").val()!=null && $("#owner").val().length >= 4 && $.isNumeric($("#cvv").val()) == true
                 && $("#cvv").val()!=null && $("#cvv").val()!="" &&  $("#cvv").val()>=100 && $("#cvv").val()<=999 && $("#card-number").val().length == 16 &&
                 $.isNumeric($("#card-number").val()) == true && $("#card-number").val()!=null && $("#card-number").val()!="") 
-                {    alert("Payment Successful")
-                    location.href= "success/<%=courseId %>"
+                {    alert("Payment Successful")              
+                location.href= "success/<%=courseId %>"
                 }
                   else{  alert("Check your card info!");
                     location.reload();

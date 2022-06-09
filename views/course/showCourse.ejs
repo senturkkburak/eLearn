@@ -160,8 +160,29 @@
             <a href="/putVideo/<%=foundCourse._id%>">Add Video</a>
             <br>
             <%} %>
+            <% if(files){ %>
+                <% files.forEach(function(file) { %>
+                  <div class="container-fluid mt-5 mx-2">
+                    
+          
+                    <% if(file.isVideo ) { %>
+                      <div>
+                        <a href="/showVideo/<%= file.filename %>"> <h4><%= file.videoTitle %> </h4></a>
+                      </div>
+                      
+                      
+          
+                      <!--<img src="image/<%= file.filename %>" alt="yok">-->
+                      <% } else { %>
+          
+                        <% } %>
+          
+                  </div>
+                  <% }) %>
+                    <% } else { %>
+                      <p>Henüz video eklenmemiş!</p>
+                      <% } %>
 
-            <a href="/showVideo/<%=foundCourse._id%>">Show Videos for This Course</a>
             
             
         </form>

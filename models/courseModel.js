@@ -8,6 +8,7 @@ const CourseSchema = new Schema({
 	coursePrice: { type: Number, require: true },
 	courseCurriculum: { type: String, require: true },
 	courseOwner:{type:String},
+	courseParticipant:{type:Array},
 	date: { type: Date, default: Date.now }
 },
 	{ collection: 'courses' }
