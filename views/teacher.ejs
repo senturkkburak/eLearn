@@ -53,7 +53,8 @@
         <h5><%=   course.courseName  %></h5>
         <h5><%=   course.courseDescription  %></h5>
         <p><%=   course.coursePrice  %> $</p>
-        <a href="/teacherCourses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
+        <a href="/teacherCourses/<%= course._id  %>" class="btn btn-warning btn-sm">Edit</a>
+        <a href="/courses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
     </div>
 </div>
 <% });  %>
