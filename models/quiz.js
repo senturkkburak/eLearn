@@ -2,11 +2,12 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const examSchema = new Schema({
-    questionTitle:{type:String, require:true},
-    option1:{type:String, require:true},
-    option2:{type:String, require:true},
-    option3:{type:String, require:true},
-    option4:{type:String, require:true},
+    courseId:{type:String,require:true},
+    questionname:{type:String, require:true},
+    firstoption:{type:String, require:true},
+    secondoption:{type:String, require:true},
+    thirdoption:{type:String, require:true},
+    fourthoption:{type:String, require:true},
     
 },
     {collection:"quiz"}

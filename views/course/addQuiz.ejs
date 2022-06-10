@@ -3,83 +3,53 @@
 
         <div class="w-75 m-5 ">
             <h3 class="mb-3 p-2 border-bottom">Add Quiz</h3>
-            <form action="/addQuiz/<%=foundCourse._id%>">
+            <form action="/addQuiz/<%=cid%>" method="POST">
               
                 
                 <div class="container-fluid questionContainer  border border-primary p-3">
                     <h3 class="text-center display-5">Question</h3>
                     <div class="mb-3">
-
+                     
                         <label for="questionName">Question Name</label>
-                        <input type="text" id="questionname" class="form-control" placeholder="Enter question itself"
+                        <input type="text" name="questionname" id="questionname" class="form-control" placeholder="Enter question itself"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
 
                         <label for="firstOption">First Option</label>
-                        <input type="text" id="firstoption" class="form-control" placeholder=" First Option"
+                        <input type="text"  name="firstoption" id="firstoption" class="form-control" placeholder=" First Option"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
 
                         <label for="secondoption">Second option</label>
-                        <input type="text" id="secondoption" class="form-control" placeholder=" Second option"
+                        <input type="text" name="secondoption" id="secondoption" class="form-control" placeholder=" Second option"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
 
                         <label for="thirdoption">Third option</label>
-                        <input type="text" id="thirdoption" class="form-control" placeholder="Third option"
+                        <input type="text" name="thirdoption"id="thirdoption" class="form-control" placeholder="Third option"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
 
                         <label for="fourthoption">Fourth option</label>
-                        <input type="text" id="fourthoption" class="form-control" placeholder="Fourth option"
+                        <input type="text" name="fourthoption"id="fourthoption" class="form-control" placeholder="Fourth option"
                             autocomplete="off" required>
                     </div>
 
 
                 </div>
                <div class="buttons d-flex justify-content-between">
-                <button type="button" class="btn btn-outline-primary mt-4" id="createQuestions">Soruları Oluştur</button>
+                <input type="submit" value="Submit" id="createQuizButton"class="btn btn-primary btn-block" onclick="location.href='/addQuiz/<%=cid%>';">
 
-
-                <a href="/teacherCourses/<%= course._id  %>" id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</a>
+                <a href="/teacherCourses/<%= cid  %>" id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</a>
                </div>
             </form>
         </div>
     </div>
 
-   <script>
-        $(document).ready(function () {
-            $("#createQuestions").click(function () {
-
-                    var questionname = $("#questionname").val();
-                    var firstoption = $("#firstoption").val();
-                    var secondoption = $("#secondoption").val();
-                    var thirdoption = $("#thirdoption").val();
-                    var fourthoption = $("#fourthoption").val();
-                    let data = {
-                        questionname:questionname,
-                        firstoption:firstoption,
-                        secondoption,secondoption,
-                        thirdoption:thirdoption,
-                        fourthoption:fourthoption
-                        
-                    }
-
-                    $.post("newCourse", { data: data })
-                        .then(function (addedCourse) {
-                            console.log(addedCourse);
-                        });
-
-
-                });
-
-            });
-        
-
-   </script>
+  
 
     <%- include ('../partials/footer') %>

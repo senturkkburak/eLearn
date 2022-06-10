@@ -290,30 +290,26 @@ router.get('/putVideo/:courseId', isLoggedIn, isTeacher, (req, res) => {
 router.get('/addQuiz/:courseId', isLoggedIn, (req, res) => {
 
   const cidd = req.params.courseId
-  Course.findById(cidd)
-    .then((foundCourse) => {
-      res.render("course/addQuiz", { cid: cidd , foundCourse: foundCourse} );
-    })
-  // .catch((err) => {
-  //   console.log("====ERROR====")
-  //   console.log(err);
-  //   res.send(err);
-  // })
+res.render("course/addQuiz", { cid: cidd } );
+
 });
 
-router.post("/addQuiz" , (req,res)=>{
+router.post("/addQuiz/:courseId" , (req,res)=>{
+
+  const cid=req.params.courseId;
   var obj = {
+    courseId: cid,
     questionname: req.body.questionname,
     firstoption: req.body.firstoption,
     secondoption: req.body.secondoption,
     thirdoption: req.body.thirdoption,
-    
-  }
+    fourthoption:req.bodyfourthoption
+    }
 
   quiz.create(obj)
     .then((obj) => {
       console.log(obj);
-      res.redirect("course/addQuiz");
+     
 
     })
     .catch((err) => {
@@ -321,14 +317,20 @@ router.post("/addQuiz" , (req,res)=>{
       console.log(err);
       res.send(err);
     });
+    res.redirect("/teacherCourses/"+cid);
 })
 
-router.post("/showVideo", (req, res) => {
+router.post("/showVideo/:videoNam", (req, res) => {
  // res.json(req.body);
- 
+ const videoNam=req.params.videoNam;
+
   var obj = {
+    questionOwner:req.user.firstname,
+    questionVid:videoNam,
     questionTitle:req.body.questionTitle,
     questionBody:req.body.questionBody,
+    qAnswerCount:0,
+    qLikeCount:0
   }
 
 
@@ -345,7 +347,7 @@ router.post("/showVideo", (req, res) => {
       console.log(err);
       res.send(err);
     });
-    res.render("course/showVideo")
+    res.redirect(req.get('referer'));
   
 });
 
@@ -446,7 +448,7 @@ router.get('/showVideo/video/:filename', (req, res) => {
 
 router.get('/showVideo/:videoNam', (req, res) => {
   const videoNam = req.params.videoNam;
-  question.find({}, (err, foundQuestions) => {
+  question.find({questionVid:videoNam}, (err, foundQuestions) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
