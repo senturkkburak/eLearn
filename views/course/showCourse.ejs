@@ -125,8 +125,13 @@
     
     <div class="card">
         <img src="" alt="">
+        <%console.log(okParticipant) %>
+        <%if(okParticipant==false && okOwner == false){ %>
         <h3><%= foundCourse.coursePrice %> $</h3>
         <a href="/payment/<%= foundCourse._id %>" class="payment">Satın al</a>
+        <%}else{ %>
+            <h3>Purchased</h3>
+            <% } %>
     </div>
     
 </div>
@@ -156,32 +161,7 @@
                 <i class="fa-solid fa-user "></i>
                 <h4 class="mb-3 p-2 border-bottom">Created At:  <%= foundCourse.date %></h4>
             </div>
-            <% if(currentUser.role==1){%>
-            <a href="/putVideo/<%=foundCourse._id%>">Add Video</a>
-            <br>
-            <%} %>
-            <% if(files){ %>
-                <% files.forEach(function(file) { %>
-                  <div class="container-fluid mt-5 mx-2">
-                    
-          
-                    <% if(file.isVideo ) { %>
-                      <div>
-                        <a href="/showVideo/<%= file.filename %>"> <h4><%= file.videoTitle %> </h4></a>
-                      </div>
-                      
-                      
-          
-                      <!--<img src="image/<%= file.filename %>" alt="yok">-->
-                      <% } else { %>
-          
-                        <% } %>
-          
-                  </div>
-                  <% }) %>
-                    <% } else { %>
-                      <p>Henüz video eklenmemiş!</p>
-                      <% } %>
+            
 
             
             

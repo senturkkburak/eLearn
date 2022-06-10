@@ -30,7 +30,7 @@
                   <% if(file.isVideo ) { %>
               <tr>
                 <th scope="row"></th>
-                <td><a href="/showVideo/<%= file.filename %>"> <h4><%= file.videoTitle %> </h4></a></td>
+                <td><a href="/showVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4><%= file.videoTitle %> </h4></a></td>
                 <% } else { %>
 
                   <% } %>

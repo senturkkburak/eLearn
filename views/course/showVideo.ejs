@@ -34,20 +34,22 @@
               <!-- <source src="movie.ogg" type="video/ogg"> -->
               Your browser does not support the video tag.
             </video>
-
+           
               <div class="questionContainer m-5">
                 <h3 class="display-6 mb-3">Bu kurstaki sorular</h3>
                 <div class="questionContent mb-5">
                   <% foundQuestions.forEach( (question)=>{ %>
-                  <p class="text-center" style="font-size: 18px; margin-bottom: 15px;" id="questionTitle"><%=   question.questionTitle  %></p>
-                  <p style="font-size: 18px;" id="questionBody"><%=   question.questionBody  %></p>
+                  <p  style="font-size: 18px;" id="questionOwner">From: <%=   question.questionOwner  %></p>
+                  <p  style="font-size: 18px;" id="questionTitle">Question: <%=   question.questionTitle  %></p>
+                  <p style="font-size: 18px;" id="questionBody"><%-   question.questionBody  %></p>
                 </div>
                 <% });  %>
-              </div>
+              </div> 
+              <% if(okParticipant==true){ %>
               <p id="soruSor" class="text-center mb-5" style="cursor: pointer; font-size: 25px; ">Yeni soru sor</p>
-             
+             <% } %>
               <div id="questionForm" class="container questionForm mt-5">
-                <form action="/showVideo/<%= videoNam%>" method="POST">
+                <form action="/showVideo/<%= videoNam%>/<%=cidd%>" method="POST">
                   <div class="form-group mb-3">
                     <div class="form-label">Başlık veya Özet</div>
                     <input name="questionTitle" type="text" id="title" class="form-control">
@@ -58,7 +60,7 @@
                   </div>
                   <div class="form-group mb-3">
 
-                    <input type="submit" id="submit" class="form-control btn btn-outline-success btn-lg" onclick="location.href='/showVideo/<%= videoNam%>';">
+                    <input type="submit" id="submit" class="form-control btn btn-outline-success btn-lg" onclick="location.href='/showVideo/<%= videoNam%>/<%=cidd%>';">
                   </div>
                 </form>
                 <button class="btn btn-outline-danger btn-lg w-100 mt-3 mb-3">Tüm Sorulara Geri Dön</button>

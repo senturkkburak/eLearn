@@ -90,6 +90,21 @@ function isTeacher(req, res, next) {
   }
 }
 
+// function isParticipant(req, res, next) {
+//   const participant = req.user._id;
+
+//   if (req.isAuthenticated()) {
+//     if(){
+//       return next();
+//     }else {
+//       res.redirect("/")
+//     }
+    
+//   } else {
+//     res.redirect("/")
+//   }
+// }
+
 router.get("/login", (req, res) => {
   res.render('login');
 })
@@ -125,7 +140,7 @@ router.post("/register", (req, res) => {
   })
 })
 router.get("/teacher", isLoggedIn, isTeacher, (req, res) => {
-  const cu = req.user._id;
+  const cu = req.user.username;
   Course.find({ courseOwner: cu }, (err, myCourses) => {
     if (err) {
       console.log("====ERROR====")
@@ -138,7 +153,7 @@ router.get("/teacher", isLoggedIn, isTeacher, (req, res) => {
 router.get("/categories", isLoggedIn, (req, res) => {
   res.send("Category Page");
 });
-router.get("/signout", (req, res) => {
+router.get("/signout", isLoggedIn,(req, res) => {
   req.logout();
   res.redirect("/");
 });
@@ -158,15 +173,16 @@ var storageImage = multer.diskStorage({
 var uploadImage = multer({ storage: storageImage });
 
 
-router.post("/newCourse", (req, res, next) => {
+router.post("/newCourse", isLoggedIn, isTeacher, (req, res, next) => {
 
 
   var obj = {
+    
     courseName: req.body.data.courseName,
     courseDescription: req.body.data.courseDescription,
     coursePrice: req.body.data.coursePrice,
     courseCurriculum: req.body.data.courseCurriculum,
-    courseOwner: req.user._id
+    courseOwner: req.user.username
   }
 
   Course.create(obj)
@@ -185,60 +201,36 @@ router.post("/newCourse", (req, res, next) => {
 
 router.get("/courses/:courseId", isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
-  const idcompare = req.params.courseId;
+  const cu=req.user.username;
   Course.findById(cidd)
     .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner=(foundCourse.courseOwner==cu);   
 
-      gfs.files.find({ courseInfo: idcompare }).toArray((err, files) => {
-        // Check if files
-        if (!files || files.length === 0) {
-          res.render('course/showCourse', { foundCourse: foundCourse, files: false });
-        } else {
-          files.map(file => {
-            if (
-              // file.contentType === 'image/png' || file.contentType === 'image/jpg' || file.contentType === 'image/jpeg'  
-              file.contentType === 'video/mp4'
-            ) {
-              file.isVideo = true;
-            } else {
-              file.isVideo = false;
-            }
-
-          });
-
-          res.render('course/showCourse', { foundCourse: foundCourse, files: files });
-        }
-
-      });
-
+      res.render('course/showCourse', { foundCourse: foundCourse, okParticipant: okParticipant, okOwner:okOwner });
     })
-  // .catch((err) => {
-  //   console.log("====ERROR====")
-  //   console.log(err);
-  //   res.send(err);
-  // })
+ 
 });
-router.get("/teacherCourses/:courseId", isLoggedIn, (req, res) => {
+router.get("/teacherCourses/:courseId", isLoggedIn, isTeacher,(req, res) => {
   const cidd = req.params.courseId
-  Course.findById(cidd)
-    .then((foundCourse) => {
-      res.render("course/teacherCourse", { foundCourse: foundCourse });
-    })
-  // .catch((err) => {
-  //   console.log("====ERROR====")
-  //   console.log(err);
-  //   res.send(err);
-  // })
+  const cu=req.user.username;
+Course.findById(cidd)
+    .then((found) => {
+      const okOwner= (found.courseOwner==cu);
+      if(okOwner==true){
+
+         Course.findById(cidd)
+        .then((foundCourse) => {
+        res.render("course/teacherCourse", { foundCourse: foundCourse });
+    })   
+     
+    }else{
+      res.redirect("/")
+    }
+});      
+    
+  
 });
-
-router.get("/upload", isLoggedIn, (req, res) => {
-  res.render("course/upload")
-})
-
-
-router.get("/example", (req, res) => {
-  res.render("example")
-})
 
 // Init gfs
 let gfs;
@@ -283,18 +275,39 @@ const upload = multer({ storage });
 // @route GET /
 // @desc Loads form
 router.get('/putVideo/:courseId', isLoggedIn, isTeacher, (req, res) => {
-  const cid = req.params.courseId;
-  res.render('course/putVideo', { cid: cid });
-});
-
-router.get('/addQuiz/:courseId', isLoggedIn, (req, res) => {
-
   const cidd = req.params.courseId
-res.render("course/addQuiz", { cid: cidd } );
+  const cu=req.user.username;
+  const cid = req.params.courseId;
+   Course.findById(cidd)
+    .then((foundCourse) => {
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okOwner==true){
+        res.render('course/putVideo', { cid: cid });
+      }else
+     res.redirect("/")
+    })      
+});
+
+router.get('/addQuiz/:courseId', isLoggedIn,isTeacher, (req, res) => {
+const cidd = req.params.courseId
+const cu =req.user.username;
+
+Course.findById(cidd)
+    .then((found) => {
+      const okOwner= (found.courseOwner==cu);
+      if(okOwner==true){
+
+        res.render("course/addQuiz", { cid: cidd } );
+     
+    }else{
+      res.redirect("/")
+    }
+}); 
+
 
 });
 
-router.post("/addQuiz/:courseId" , (req,res)=>{
+router.post("/addQuiz/:courseId",isLoggedIn,isTeacher ,(req,res)=>{
 
   const cid=req.params.courseId;
   var obj = {
@@ -320,11 +333,16 @@ router.post("/addQuiz/:courseId" , (req,res)=>{
     res.redirect("/teacherCourses/"+cid);
 })
 
-router.post("/showVideo/:videoNam", (req, res) => {
+router.post("/showVideo/:videoNam/:courseId",isLoggedIn, (req, res) => {
  // res.json(req.body);
- const videoNam=req.params.videoNam;
-
-  var obj = {
+ const cidd = req.params.courseId
+  const cu=req.user.username;
+  const videoNam=req.params.videoNam;
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      if(okParticipant==true){
+           var obj = {
     questionOwner:req.user.firstname,
     questionVid:videoNam,
     questionTitle:req.body.questionTitle,
@@ -332,10 +350,6 @@ router.post("/showVideo/:videoNam", (req, res) => {
     qAnswerCount:0,
     qLikeCount:0
   }
-
-
-
-
   question.create(obj)
     .then((obj) => {
       console.log(obj);
@@ -348,13 +362,19 @@ router.post("/showVideo/:videoNam", (req, res) => {
       res.send(err);
     });
     res.redirect(req.get('referer'));
+      }else
+      res.redirect("/")
+    })
+ 
+
+  
   
 });
 
 
 // @route POST /upload
 // @desc  Uploads file to DB
-router.post('/putVideo/:cid', upload.single('file'), (req, res) => {
+router.post('/putVideo/:cid', upload.single('file'),isLoggedIn,isTeacher, (req, res) => {
 
   const cid = req.params.cid;
   const videoid = req.file.filename;
@@ -370,36 +390,36 @@ router.post('/putVideo/:cid', upload.single('file'), (req, res) => {
   res.render('course/putVideo', { cid: cid })
 });
 
-// @route GET /files
-// @desc  Display all files in JSON
-router.get('/files', (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: 'No files exist'
-      });
-    }
+// // @route GET /files
+// // @desc  Display all files in JSON
+// router.get('/files', (req, res) => {
+//   gfs.files.find().toArray((err, files) => {
+//     // Check if files
+//     if (!files || files.length === 0) {
+//       return res.status(404).json({
+//         err: 'No files exist'
+//       });
+//     }
 
-    // Files exist
-    return res.json(files);
-  });
-});
+//     // Files exist
+//     return res.json(files);
+//   });
+// });
 
-// @route GET /files/:filename
-// @desc  Display single file object
-router.get('/files/:filename', (req, res) => {
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    // Check if file
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: 'No file exists'
-      });
-    }
-    // File exists
-    return res.json(file);
-  });
-});
+// // @route GET /files/:filename
+// // @desc  Display single file object
+// router.get('/files/:filename', (req, res) => {
+//   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+//     // Check if file
+//     if (!file || file.length === 0) {
+//       return res.status(404).json({
+//         err: 'No file exists'
+//       });
+//     }
+//     // File exists
+//     return res.json(file);
+//   });
+// });
 
 // @route GET /image/:filename
 // @desc Display Image
@@ -424,6 +444,7 @@ router.get('/video/:videoNam', (req, res) => {
     }
   });
 });
+
 router.get('/showVideo/video/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
@@ -446,16 +467,29 @@ router.get('/showVideo/video/:filename', (req, res) => {
   });
 });
 
-router.get('/showVideo/:videoNam', (req, res) => {
+router.get('/showVideo/:videoNam/:courseId',isLoggedIn, (req, res) => {
   const videoNam = req.params.videoNam;
-  question.find({questionVid:videoNam}, (err, foundQuestions) => {
+  const cidd = req.params.courseId
+  const cu=req.user.username;
+ 
+
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okParticipant==true || okOwner==true){
+      question.find({questionVid:videoNam}, (err, foundQuestions) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam  })
+      res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam ,okParticipant:okParticipant, cidd:cidd})
     }
-  });
+      });
+      }else
+    res.redirect("/")
+    })
+  
  
 
 
@@ -473,18 +507,32 @@ app.delete('/files/:id', (req, res) => {
   });
 });
 
-router.get("/payment/:courseId", (req, res) => {
+router.get("/payment/:courseId", (req, res) => { 
   const courseId = req.params.courseId;
-  res.render("payment.ejs", { courseId: courseId })
+  const cu=req.user.username;
+  Course.findById(courseId)
+  .then((foundCourse) => {
+    const okParticipant=(foundCourse.courseParticipant).includes(cu);
+    const okOwner= (foundCourse.courseOwner==cu);
+    if(okParticipant==false && okOwner==false){
+      res.render("payment.ejs", { courseId: courseId })
+    }else{
+      res.redirect("/")
+    }
+    
+  })
+  
 })
 router.get("/payment/success/:courseId", (req, res) => {
   const courseId = req.params.courseId;
   const currentU = req.user._id;
-  const firstname = req.user.firstname;
-  const lastname = req.user.lastname;
-  const username = req.user.username;
-  const participant = { _id: req.user._id, firstname: firstname, lastname: lastname, username: username };
-  Course.findOne({ _id: courseId }, (err, foundCourse) => {
+  const cu=req.user.username;
+  Course.findById(courseId)
+  .then((foundCourse) => {
+    const okParticipant=(foundCourse.courseParticipant).includes(cu);
+          const okOwner= (foundCourse.courseOwner==cu);
+    if(okParticipant==false && okOwner==false){
+      Course.findOne({ _id: courseId }, (err, foundCourse) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
@@ -494,13 +542,19 @@ router.get("/payment/success/:courseId", (req, res) => {
         { _id: currentU },
         { $push: { purchased: foundCourse } })).then(Course.findOne({ _id: courseId }).then(() => Course.updateOne(
           { _id: courseId },
-          { $push: { courseParticipant: participant } }
+          { $push: { courseParticipant: cu } }
         )))
 
 
     }
   });
   res.redirect("/myCourses")
+ }else{
+      res.redirect("/")
+    }
+    
+  })
+  
 });
 
 
@@ -522,15 +576,24 @@ router.get("/quiz", (req, res) => {
 })
 
 router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
+
   const cidd = req.params.courseId
   const idcompare = req.params.courseId;
+  const cu=req.user.username;
+  
   Course.findById(cidd)
+    .then((found) => {
+      const okParticipant=(found.courseParticipant).includes(cu);
+      const okOwner= (found.courseOwner==cu);
+      if(okParticipant==true || okOwner==true){
+
+        Course.findById(cidd)
     .then((foundCourse) => {
 
       gfs.files.find({ courseInfo: idcompare }).toArray((err, files) => {
         // Check if files
         if (!files || files.length === 0) {
-          res.render('/videos', { foundCourse: foundCourse, files: false });
+          res.render('videos', { foundCourse: foundCourse, files: false });
         } else {
           files.map(file => {
             if (
@@ -550,6 +613,17 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
       });
       
     });
+
+      }else{
+        res.redirect("/");
+      }
+     
+    })
+
+
+
+
+  
   });
 
 
@@ -563,3 +637,28 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 
   module.exports = router;
 
+///////////////isParticipant//////////////////////////
+//////////////////////////////////////////////////////
+// const cidd = req.params.courseId
+//   const cu=req.user.username;
+// Course.findById(cidd)
+//     .then((foundCourse) => {
+//       const okParticipant=(foundCourse.courseParticipant).includes(cu);
+//       if(okParticipant==true){
+//             kurs üyesi işlemleri
+//       }else
+//       home'a yönlendir
+//     })
+///////////////////////////////////////////////////////
+////////////////isCourseOwner//////////////////////////
+// const cidd = req.params.courseId
+//   const cu=req.user.username;
+// Course.findById(cidd)
+//     .then((foundCourse) => {
+//       const okOwner= (foundCourse.courseOwner==cu);
+//       if(okOwner==true){
+//             kurs sahibi işlemleri
+//       }else
+//       home'a yönlendir
+//     })      
+//     })
