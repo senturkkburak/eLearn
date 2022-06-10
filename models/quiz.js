@@ -9,7 +9,7 @@ const examSchema = new Schema({
     option4:{type:String, require:true},
     
 },
-    {collection:"exam"}
+    {collection:"quiz"}
 )
 
 const model = mongoose.model("examSchema",examSchema)

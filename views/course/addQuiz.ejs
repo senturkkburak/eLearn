@@ -11,13 +11,13 @@
                     <div class="mb-3">
 
                         <label for="questionName">Question Name</label>
-                        <input type="text" id="questionName" class="form-control" placeholder="Enter question itself"
+                        <input type="text" id="questionname" class="form-control" placeholder="Enter question itself"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
 
                         <label for="firstOption">First Option</label>
-                        <input type="text" id="firstOption" class="form-control" placeholder=" First Option"
+                        <input type="text" id="firstoption" class="form-control" placeholder=" First Option"
                             autocomplete="off" required>
                     </div>
                     <div class="mb-3">
@@ -45,29 +45,41 @@
                 <button type="button" class="btn btn-outline-primary mt-4" id="createQuestions">Soruları Oluştur</button>
 
 
-                <button id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</button>
+                <a href="/teacherCourses/<%= course._id  %>" id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</a>
                </div>
             </form>
         </div>
     </div>
 
-    <script>
-         // Divi oluşuturuyoruz ama içindeki kodlarla doldurmaya ihtiyacımız var.
-        /* 
-         var b = document.querySelector(".questionContainer");
+   <script>
+        $(document).ready(function () {
+            $("#createQuestions").click(function () {
+
+                    var questionname = $("#questionname").val();
+                    var firstoption = $("#firstoption").val();
+                    var secondoption = $("#secondoption").val();
+                    var thirdoption = $("#thirdoption").val();
+                    var fourthoption = $("#fourthoption").val();
+                    let data = {
+                        questionname:questionname,
+                        firstoption:firstoption,
+                        secondoption,secondoption,
+                        thirdoption:thirdoption,
+                        fourthoption:fourthoption
+                        
+                    }
+
+                    $.post("newCourse", { data: data })
+                        .then(function (addedCourse) {
+                            console.log(addedCourse);
+                        });
+
+
+                });
+
+            });
         
-         document.querySelector("#createQuestions").onclick = ()=>{
-           document.querySelector(".container").innerHTML += "<div>merhaba</div><h2>selamlr</h2>";
-         }*/
-       $(document).ready(function(){
-        $("#createQuestions").click(function(){
-            $( ".questionContainer").insertAfter( $( ".questionContainer" ) );
-           });
-       });
-           
-       
-        
-       
-    </script>
+
+   </script>
 
     <%- include ('../partials/footer') %>

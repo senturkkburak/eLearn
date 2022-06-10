@@ -37,13 +37,13 @@
     <h2 class="display-5 py-4">Öğrenim İçeriğim</h2>
 </div>
 <% purchasedCourses.purchased.forEach( (course)=>{ %>
-<div class="contents">
+<div class="contents d-flex flex-row justify-content-between">
     <div class="cards">
         <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok" width="200" height="125" >
         <h5><%=   course.courseName  %></h5>
         <h5><%=   course.courseDescription  %></h5>
         <p><%=   course.coursePrice  %> $</p>
-        <a href="/courses/<%= course._id  %>" class="btn btn-warning btn-sm">Details</a>
+        <a href="/videolist/<%= course._id %>" class="btn btn-warning btn-sm">Start Learning</a>
     </div>
 </div>
 <% });  %>

@@ -1,0 +1,55 @@
+<%- include ('./partials/header') %>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+<style>
+  a{
+    text-decoration: none;
+    color: black;
+  }
+</style>
+
+
+      <div class="container-fluid m-5 mx-2 d-flex align-items-center justify-content-center">
+        
+
+        
+          <table class="table table-striped w-50 text-center">
+            <thead>
+              
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Video Name</th>
+             
+              </tr>
+            </thead>
+            <tbody>
+              <% if(files){ %>
+                <% files.forEach(function(file) { %>
+                  <% if(file.isVideo ) { %>
+              <tr>
+                <th scope="row"></th>
+                <td><a href="/showVideo/<%= file.filename %>"> <h4><%= file.videoTitle %> </h4></a></td>
+                <% } else { %>
+
+                  <% } %>
+      
+            
+            <% }) %>
+              <% } else { %>
+                <p>Henüz video eklenmemiş!</p>
+                <% } %>
+              </tr>
+              
+            </tbody>
+          </table>
+</div>
+
+          
+
+          
+ 
+
+
+<%- include ('./partials/footer') %>
