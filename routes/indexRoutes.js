@@ -358,6 +358,7 @@ Course.findById(cidd)
   question.create(obj)
     .then((obj) => {
       console.log(obj);
+
      
 
     })
@@ -366,7 +367,7 @@ Course.findById(cidd)
       console.log(err);
       res.send(err);
     });
-    res.redirect(req.get('referer'));
+    res.redirect("/showVideo/"+videoNam+"/"+cidd);
       }else
       res.redirect("/")
     })
@@ -525,10 +526,6 @@ Course.findById(cidd)
       }else
     res.redirect("/")
     })
-  
- 
-
-
 });
 
 // @route DELETE /files/:id
@@ -790,13 +787,8 @@ Course.findById(cidd)
      
     })      
     }) 
-    
-    
-    
-    
-    //ÇALIŞMIYOR
+
     router.get("/deleteQuiz/:quizId/:courseId", isLoggedIn,(req, res) => {
-      const videoNam=req.params.videoNam;
       const cid=req.params.courseId;
       const cidd = req.params.courseId
       const cu=req.user.username;
@@ -807,16 +799,39 @@ Course.findById(cidd)
         const okOwner= (foundCourse.courseOwner==cu);
         if(okOwner==true||role==3){
          
-          quiz.findByIdAndDelete(q);
+          quiz.findByIdAndRemove(q).then((foundQuiz)=>{
 
-        res.redirect("/quizlist/"+cid)
+          })
+        res.redirect("/quizlist/"+cid );
 
         }else{
            res.redirect("/")
         }
        
       })      
-      })
+      });
+      router.get("/deleteQuestion/:questionId/:courseId", isLoggedIn,(req, res) => {
+        const cid=req.params.courseId;
+        const cidd = req.params.courseId
+        const cu=req.user.username;
+        const role = req.user.role;
+        const q = req.params.questionId;
+        Course.findById(cidd)
+        .then((foundCourse) => {
+          const okOwner= (foundCourse.courseOwner==cu);
+          if(role==3){
+           
+            question.findByIdAndRemove(q).then((foundQuiz)=>{
+  
+            })
+            res.redirect(req.header('referer'));
+  
+          }else{
+             res.redirect("/")
+          }
+         
+        })      
+        })
 
 
 

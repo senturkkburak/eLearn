@@ -42,6 +42,9 @@
                   <p  style="font-size: 18px;" id="questionOwner">From: <%=   question.questionOwner  %></p>
                   <p  style="font-size: 18px;" id="questionTitle">Question: <%=   question.questionTitle  %></p>
                   <p style="font-size: 18px;" id="questionBody"><%-   question.questionBody  %></p>
+                  <%if(role==3){ %>
+                    <a href="/deleteQuestion/<%=question._id%>/<%=cidd%>" class="btn btn-outline-danger btn-md">Delete</a>
+                    <% } %>
                 </div>
                 <% });  %>
               </div> 
