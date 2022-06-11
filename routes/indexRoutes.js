@@ -995,14 +995,14 @@ Course.findById(cidd)
           }
          
         });
-        router.get("/reportVideo/:videoNam/:courseId",(req,res)=>{
+        router.get("/reportVideo/:videoNam/:courseId",isLoggedIn,(req,res)=>{
           const videoNam =req.params.videoNam;
           const courseId=req.params.courseId;
           const reportType="video";
           res.render("reportVideo",{videoNam:videoNam,courseId:courseId,reportType:reportType})
         });
 
-        router.post("/reportVideo/:videoNam/:courseId",(req,res)=>{
+        router.post("/reportVideo/:videoNam/:courseId",isLoggedIn,(req,res)=>{
           const videoNam =req.params.videoNam;
           const courseId=req.params.courseId;
           const reportType="video";
@@ -1027,6 +1027,25 @@ Course.findById(cidd)
             res.redirect("/showVideo/"+videoNam+"/"+courseId);
 
         });
+
+        router.get("/concludeReport/:reportId", isLoggedIn,(req, res) => {
+          const cu=req.user.username;
+          const role = req.user.role;
+          const q = req.params.reportId;
+
+            if(role==3){
+             
+              reports.findByIdAndRemove(q).then((foundQuiz)=>{
+    
+              })
+              res.redirect(req.header('referer'));
+    
+            }else{
+               res.redirect("/")
+            }
+           
+            
+          });
 
 
 
