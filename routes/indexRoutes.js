@@ -424,16 +424,26 @@ router.post('/putVideo/:cid', upload.single('file'),isLoggedIn,isTeacher, (req, 
 
 // @route GET /image/:filename
 // @desc Display Image
-router.get('/video/:videoNam', (req, res) => {
+router.get('/video/:videoNam',isLoggedIn, (req, res) => {
+
   gfs.files.findOne({ filename: req.params.videoNam }, (err, file) => {
     // Check if file
+
+
     if (!file || file.length === 0) {
       return res.status(404).json({
         err: 'No file exists'
       });
     }
+    const cidd = file.courseInfo;
+  const cu=req.user.username;
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner= (foundCourse.courseOwner==cu);
 
-    // Check if image
+      if(okParticipant==true || okOwner==true){
+           // Check if image
     if (file.contentType === 'video/mp4') {
       // Read output to browser
       const readStream = gridfsBucket.openDownloadStream(file._id);
@@ -443,10 +453,14 @@ router.get('/video/:videoNam', (req, res) => {
         err: 'Not an image'
       });
     }
+      }else
+      res.redirect("/")
+    })
+    
   });
 });
 
-router.get('/showVideo/video/:filename', (req, res) => {
+router.get('/showVideo/video/:filename',isLoggedIn, (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -454,9 +468,16 @@ router.get('/showVideo/video/:filename', (req, res) => {
         err: 'No file exists'
       });
     }
+    console.log(file.courseInfo);
 
-    // Check if image
-    if (file.contentType === 'video/mp4') {
+const cidd = file.courseInfo
+  const cu=req.user.username;
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okParticipant==true || okOwner==true){
+            if (file.contentType === 'video/mp4') {
       // Read output to browser
       const readStream = gridfsBucket.openDownloadStream(file._id);
       readStream.pipe(res);
@@ -465,6 +486,16 @@ router.get('/showVideo/video/:filename', (req, res) => {
         err: 'Not an image'
       });
     }
+
+
+      }else
+      res.redirect("/")
+    })
+
+
+    /////////////
+   
+    ////////////////////
   });
 });
 
