@@ -8,7 +8,8 @@
     <title>Document</title>
     <script src="https://kit.fontawesome.com/b2df9fdb37.js" crossorigin="anonymous"></script>
     <style>
-       
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
 
         body {
             background: blue;
@@ -220,6 +221,24 @@
 <body>
     
         <button id="start-btn">Start</button>
+
+        <div class="info-box">
+            <div class="info-header">
+                <h3>Some Rules Of The Quiz</h3>
+            </div>
+            <div class="info-list">
+                <p>1. You will have <span>15 seconds</span> per each question</p>
+                <p>You need to answer at least 80% of the questions correctly</p>
+                <p>3. You can not go back change your answer so choose wisely </p>
+                <p>4. You will have <span>15 seconds</span> per each question</p>
+                <p>5. You will have <span>15 seconds</span> per each question</p>
+            </div>
+            <div class="buttons">
+                <button id="exit">Exit Quiz</button>
+                <button id="continue">Continue</button>
+            </div>
+        </div>
+    
    
 
     <div class="question-box">
@@ -227,17 +246,19 @@
             <h3>Awesome Quiz Application</h3>
             <p>Time Left <span>15</span></p>
         </div>
+        <% foundQuiz.forEach((quiz)=>{ %>
         <div class="question-title">
-            <p>1. What does XML stand for</p>
+            <p><%=quiz.questionname%></p>
         </div>
         <div class="question-options">
-            <div class="option">extensible markup language<i class="fa-solid fa-check"></i></div>
+            <div class="option"><%=quiz.firstoption%><i class="fa-solid fa-check"></i></div>
             
-            <div class="option">executable markup language<i class="fa-solid fa-xmark"></i></div>
+            <div class="option"><%=quiz.secondoption%><i class="fa-solid fa-xmark"></i></div>
             
-            <div class="option">extra markup language<i class="fa-solid fa-xmark"></i></div>
-            <div class="option">examine markup language<i class="fa-solid fa-xmark"></i></div>
+            <div class="option"><%=quiz.thirdoption%><i class="fa-solid fa-xmark"></i></div>
+            <div class="option"><%=quiz.fourthoption%><i class="fa-solid fa-xmark"></i></div>
         </div>
+        <% });  %>
         <div class="question-info">
             <p><span>2</span> of <span>5</span> Questions</p>
         </div>
@@ -252,23 +273,7 @@
         </div>
     </div>
 
-    <div class="info-box">
-        <div class="info-header">
-            <h3>Some Rules Of The Quiz</h3>
-        </div>
-        <div class="info-list">
-            <p>1. You will have <span>15 seconds</span> per each question</p>
-            <p>2. You will have <span>15 seconds</span> per each question</p>
-            <p>3. You will have <span>15 seconds</span> per each question</p>
-            <p>4. You will have <span>15 seconds</span> per each question</p>
-            <p>5. You will have <span>15 seconds</span> per each question</p>
-        </div>
-        <div class="buttons">
-            <button id="exit">Exit Quiz</button>
-            <button id="continue">Continue</button>
-        </div>
-    </div>
-
+    
 
 </body>
 
@@ -281,6 +286,7 @@ const continue_btn = document.querySelector("#continue")
 
 start_btn.onclick = () =>{
     info_box.classList.add("activeInfo");
+    start_btn.remove();
     console.log(info_box.classList);
 
 }

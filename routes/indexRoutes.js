@@ -572,8 +572,20 @@ router.get("/myCourses", isLoggedIn, (req, res) => {
 
 });
 
-router.get("/quiz", (req, res) => {
-  res.render("quiz.ejs");
+router.get("/quiz/:courseId", (req, res) => {
+  //burada belirli course id sine sahip olan quizleri getir diyeceğiz 
+  //sonra renderın içine koyup sayfada bastıracağız
+  const cidd = req.params.courseId;
+  quiz.find({courseId:cidd}, (err, foundQuiz) => {
+    if (err) {
+      console.log("====ERROR====")
+      console.log(err);
+    } else {
+      res.render("quiz", { foundQuiz: foundQuiz,cidd:cidd})
+    }
+      });
+
+
 })
 
 router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
@@ -664,6 +676,10 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
 
   
   });
+
+  router.get("/admin" , (req,res)=>{
+    res.render("admin/admin");
+  })
 
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
