@@ -1,0 +1,25 @@
+<%- include ('./partials/header') %>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% if(isAppliedBefore!=""){ %>
+        <p>Thank you for your application</p>
+        <input type="submit" value="Cancel Application" id="submitApplication"class="btn btn-primary btn-block" onclick="location.href='/cancelApplication';">
+     <% }else{ %>
+    <title>Teacher Application</title>
+</head>
+<body>
+    <form action="/applyTeacher" method="POST" enctype="multipart/form-data">
+        <div class="custom-file mb-3">
+          <input type="file" name="file" id="file" class="custom-file-input">
+          <label for="file" class="custom-file-label">Upload Your Resume</label>
+        </div>
+        <input type="submit" value="Submit" id="submitApplication"class="btn btn-primary btn-block" onclick="location.href='/applyTeacher';">
+      </form>
+   <% } %>
+<%- include ('./partials/footer') %>

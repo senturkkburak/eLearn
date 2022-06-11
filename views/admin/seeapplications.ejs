@@ -1,0 +1,35 @@
+<%- include ('../partials/header') %>
+
+<div class="tables mb-5" style="margin-left: 300px; ">
+    <h3 class="w-75 text-center mb-4">Teacher Applications</h3>
+    <table class="table table-striped w-75 text-center">
+        <thead style="font-size: 24px;">
+            <tr>
+                <th>Username</th>
+                <th>Resume</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 20px;"> 
+        
+        <tr><% if(files){ %>
+            <% files.forEach(function(file) { %>
+            <% if(file.isCV ) { %>
+            <td><%=file.uID%></td>
+            <td><a href="/downloadCV/<%=file.filename%>">Download</a></td>
+            <td><a href="/accept/<%=file.uID%>" class="btn btn-outline-success btn-md">Accept</a></td>
+            <td><a href="/decline/<%=file.uID%>" class="btn btn-outline-danger btn-md">Decline</a></td>
+            </tr>
+            <% } %>
+            <% }) %>
+            <% } else { %>
+                <td><p>No requests</p></td>
+               <% } %>
+        </tbody>
+
+    </table>
+</div>
+
+
+
+<%- include ('../partials/footer') %>

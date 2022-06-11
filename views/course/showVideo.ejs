@@ -34,7 +34,9 @@
               <!-- <source src="movie.ogg" type="video/ogg"> -->
               Your browser does not support the video tag.
             </video>
-           
+           <% if(role==0){ %> 
+            <a href="/reportVideo/<%= videoNam %>/<%=cidd%>" class="btn btn-outline-danger btn-md">Report</a>
+            <% } %>
               <div class="questionContainer m-5">
                 <h3 class="display-6 mb-3">Bu videodaki sorular</h3>
                 <div class="questionContent mb-5">
@@ -42,6 +44,7 @@
                   <p  style="font-size: 18px;" id="questionOwner">From: <%=   question.questionOwner  %></p>
                   <p  style="font-size: 18px;" id="questionTitle">Question: <%=   question.questionTitle  %></p>
                   <p style="font-size: 18px;" id="questionBody"><%-   question.questionBody  %></p>
+                  
                   <%if(role==3){ %>
                     <a href="/deleteQuestion/<%=question._id%>/<%=cidd%>" class="btn btn-outline-danger btn-md">Delete</a>
                     <% } %>

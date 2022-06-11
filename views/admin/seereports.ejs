@@ -1,0 +1,31 @@
+<%- include ('../partials/header') %>
+
+<div class="tables mb-5" style="margin-left: 300px; ">
+    <h3 class="w-75 text-center mb-4">Teacher Applications</h3>
+    <table class="table table-striped w-75 text-center">
+        <thead style="font-size: 24px;">
+            <tr>
+                <th>Report Owner</th>
+                <th>Reason</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 20px;"> 
+            <% allReports.forEach( (report)=>{ %>
+        <tr>
+            <td><%=report.reportOwner%></td>
+            <td><%=report.reason%></td>
+
+            <td><a href="/reportDetails/<%=report._id%>" class="btn btn-outline-success btn-md">Details</a></td>
+            </tr>
+
+                
+                <% }); %>
+        </tbody>
+
+    </table>
+</div>
+
+
+
+<%- include ('../partials/footer') %>

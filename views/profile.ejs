@@ -3,5 +3,14 @@
 <input class="form-control me-2" type="search" placeholder="First Name: <%=  userProfile.firstname  %>" aria-label="Search" readonly>
 <input class="form-control me-2" type="search" placeholder="Last Name: <%= userProfile.lastname %>" aria-label="Search" readonly>
 <input class="form-control me-2" type="search" placeholder="E-Mail: <%= userProfile.username %>"  readonly>
+<input class="form-control me-2" type="search" placeholder="Account Type: <%if(userProfile.role==0) { %>
+Student
+<% } %>
+<%if(userProfile.role==1) { %>
+Teacher
+<% } %>
+<%if(userProfile.role==3) { %>
+Admin
+<% } %>"  readonly>
 <br><br><br><br>
 <%- include ('./partials/footer') %>

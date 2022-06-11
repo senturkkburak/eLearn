@@ -2,23 +2,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
-        * {
-            font-family: 'Poppins', 'sans-serif';
-        }
+      
     </style>
     <br><br>
 
-    <h1 class="text-center">Admin Panel</h1>
-
+    <h1 class="text-center">Admin Dashboard</h1>
+    
     <br><br><br>
-    <div class="tables mb-5" style="margin-left: 300px; ">
-        <h3 class="w-75 text-center mb-4">Kullanıcı Listesi</h3>
+    <div class="tables mb-5" style="margin-left: 300px; "><a class="btn btn-outline-success btn-md m-5 text-center" href="/seeApplications">See Teacher Applications</a>
+        <a class="btn btn-outline-danger btn-md m-5 text-center" href="/seeReports">See Reports</a>
+        <h3 class="w-75 text-center mb-4">User List</h3>
         <table class="table table-striped w-75 text-center">
             <thead style="font-size: 24px;">
                 <tr>
-                    <th>Öğrenci Listesi</th>
-                    <th>Öğrenci mi Öğretmen mi</th>
-                    <th>Kullanıcyı Kaldır</th>
+                    <th>Usernames</th>
+                    <th>User Type</th>
+                    <th>Ban User</th>
                 </tr>
             </thead>
             <tbody style="font-size: 20px;""> 
@@ -47,14 +46,14 @@
     </div>
 
     <div class="tables mb-5" style="margin-left: 300px; ">
-        <h3 class="w-75 text-center mb-4">Kurs Listesi</h3>
+        <h3 class="w-75 text-center mb-4">Course List</h3>
         <table class="table table-striped w-75 text-center">
             <thead style="font-size: 24px;">
                 <tr>
-                    <th>Kurs Listesi</th>
-                    <th>Kurs Öğretmeni</th>
-                    <th>Kursu Kaldır</th>
-                    <th>Kursu Gör</th>
+                    <th>Course Name</th>
+                    <th>Course Teacher</th>
+                    <th>Remove Course</th>
+                    <th>Go to Course</th>
                 </tr>
             </thead>
             <tbody style="font-size: 20px;""> 
@@ -64,8 +63,8 @@
                 öğrenci olup olmadıklarına bakmak lazım-->
                 <td><%= course.courseName %></td>
                 <td><%= course.courseOwner %></td>
-                <td><a href=" /admin/remove/<%=course._id%>" class="btn btn-outline-danger btn-md">Ban</a></td>
-                <td><a href=" /courses/<%=course._id%>" class="btn btn-outline-danger btn-md">See</a></td>
+                <td><a href=" /admin/remove/<%=course._id%>" class="btn btn-outline-danger btn-md">Remove</a></td>
+                <td><a href=" /courses/<%=course._id%>" class="btn btn-outline-danger btn-md">Go</a></td>
                 </tr>
                 <% }); %>
             </tbody>

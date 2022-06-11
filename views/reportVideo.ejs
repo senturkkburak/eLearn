@@ -1,0 +1,29 @@
+<%- include ('./partials/header') %>
+    <div class="container d-flex flex-row">
+
+        <div class="w-75 m-5 ">
+            <h3 class="mb-3 p-2 border-bottom">Report</h3>
+            <form action="/reportVideo/<%= videoNam %>/<%=courseId%>" method="POST">
+              
+                
+                <div class="container-fluid questionContainer  border border-primary p-3">
+                    
+                    <h3 class="text-center display-5"></h3>
+                    <div class="mb-3">
+                     
+                        <label for="reason">Reason</label>
+                        <input type="text" name="reason" id="reason" class="form-control" placeholder="Enter your reason" autocomplete="off" required>
+                    </div>
+
+
+                </div>
+               <div class="buttons d-flex justify-content-between">
+                <input type="submit" value="Submit" id="createQuizButton"class="btn btn-md btn-outline-success mt-4 btn-lg-6" onclick="location.href='/reportVideo/<%= videoNam %>/<%=courseId%>';">
+                <a href="/showVideo/<%= videoNam %>/<%= courseId  %>" id="cancelButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">Cancel</a>
+               </div>
+            </form>
+        </div>
+    </div>
+  
+
+    <%- include ('./partials/footer') %>

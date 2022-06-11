@@ -31,6 +31,7 @@
               <tr>
                 <th scope="row"></th>
                 <td><a href="/showVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4><%= file.videoTitle %> </h4></a></td>
+
                 <% if(role==3||okOwner==true){ %>
                   <td><a href="/deleteVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4>Delete </h4></a></td>
                     <% } %>
@@ -48,7 +49,6 @@
             </tbody>
            
              
-            <th scope="row"><a href="/quizlist/<%=foundCourse._id %>"><h3>Quizzes</h3></a></th>
  
           </table>
           
