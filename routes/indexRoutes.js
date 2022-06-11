@@ -311,6 +311,7 @@ router.post("/addQuiz/:courseId",isLoggedIn,isTeacher ,(req,res)=>{
 
   const cid=req.params.courseId;
   var obj = {
+    quizTitle:req.body.quiztitle,
     courseId: cid,
     questionname: req.body.questionname,
     firstoption: req.body.firstoption,
@@ -625,7 +626,44 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 
   
   });
+router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
+  const cidd = req.params.courseId
+  const idcompare = req.params.courseId;
+  const cu=req.user.username;
+  
+  Course.findById(cidd)
+    .then((found) => {
+      const okParticipant=(found.courseParticipant).includes(cu);
+      const okOwner= (found.courseOwner==cu);
+      if(okParticipant==true || okOwner==true){
 
+        quiz.find({courseId:idcompare}, (err, quizzes) => {
+          if (err) {
+            console.log("====ERROR====")
+            console.log(err);
+          } else {
+            res.render("quizzes", { quizzes: quizzes, okParticipant:okParticipant, cidd:cidd})
+          }
+            });
+    //  quiz.find({ courseId: idcompare }
+    //   ,(quizzes) => {
+    //    console.log(quizzes);
+
+    //       res.render('quizzes', { foundCourse: foundCourse, quizzes: quizzes });
+    //   }
+    //   ); 
+    }
+      else{
+        res.redirect("/");
+      }
+     
+    })
+
+
+
+
+  
+  });
 
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {

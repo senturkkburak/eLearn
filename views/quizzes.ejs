@@ -20,32 +20,21 @@
               
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Video Name</th>
+                <th scope="col">Quiz Name</th>
              
               </tr>
             </thead>
             <tbody>
-              <% if(files){ %>
-                <% files.forEach(function(file) { %>
-                  <% if(file.isVideo ) { %>
+                <% quizzes.forEach((quiz)=>{ %>
               <tr>
                 <th scope="row"></th>
-                <td><a href="/showVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4><%= file.videoTitle %> </h4></a></td>
-                <% } else { %>
+                <td><a href=""> <h4><%= quiz.quizTitle %> </h4></a></td>
 
-                  <% } %>
-      
-            
-            <% }) %>
-              <% } else { %>
-                <p>Henüz video eklenmemiş!</p>
-                <% } %>
+               
               </tr>
-              
+               <% });  %>
             </tbody>
-
           </table>
-          <a href="/quizlist/<%=foundCourse._id %>"><h3>Quizzes</h3></a>
 </div>
 
           
