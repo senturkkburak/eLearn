@@ -26,10 +26,11 @@
             </thead>
             <tbody>
                 <% quizzes.forEach((quiz)=>{ %>
+                 
               <tr>
                 <th scope="row"></th>
                 <td><a href="/quiz/<%= quiz._id %>"> <h4>Quiz </h4></a></td>
-                <% if(role==3){ %>
+                <% if(role==3||okOwner==true){ %>
                   <td><a href="/deleteQuiz/<%= quiz._id %>/<%=cidd%>"> <h4>Delete </h4></a></td>
                 <% } %>
       

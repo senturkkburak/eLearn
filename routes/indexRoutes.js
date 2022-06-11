@@ -645,7 +645,7 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
       gfs.files.find({ courseInfo: idcompare }).toArray((err, files) => {
         // Check if files
         if (!files || files.length === 0) {
-          res.render('videos', { foundCourse: foundCourse, files: false ,role:role});
+          res.render('videos', { foundCourse: foundCourse, files: false ,role:role,okOwner:okOwner});
         } else {
           files.map(file => {
             if (
@@ -659,7 +659,7 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 
           });
 
-          res.render('videos', { foundCourse: foundCourse, files: files ,role:role});
+          res.render('videos', { foundCourse: foundCourse, files: files ,role:role,okOwner:okOwner});
         }
 
       });
@@ -695,7 +695,7 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
             console.log("====ERROR====")
             console.log(err);
           } else {
-            res.render("quizzes", { quizzes: quizzes, okParticipant:okParticipant, cidd:cidd,role:role})
+            res.render("quizzes", { quizzes: quizzes, okOwner:okOwner, cidd:cidd,role:role})
           }
             });
     //  quiz.find({ courseId: idcompare }
