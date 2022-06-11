@@ -202,12 +202,13 @@ router.post("/newCourse", isLoggedIn, isTeacher, (req, res, next) => {
 router.get("/courses/:courseId", isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
   const cu=req.user.username;
+  const role=req.user.role;
   Course.findById(cidd)
     .then((foundCourse) => {
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
       const okOwner=(foundCourse.courseOwner==cu);   
 
-      res.render('course/showCourse', { foundCourse: foundCourse, okParticipant: okParticipant, okOwner:okOwner });
+      res.render('course/showCourse', { foundCourse: foundCourse, okParticipant: okParticipant, okOwner:okOwner , role:role});
     })
  
 });
@@ -339,10 +340,13 @@ router.post("/showVideo/:videoNam/:courseId",isLoggedIn, (req, res) => {
  const cidd = req.params.courseId
   const cu=req.user.username;
   const videoNam=req.params.videoNam;
+  const role=req.user.role;
+  
 Course.findById(cidd)
     .then((foundCourse) => {
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
-      if(okParticipant==true){
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okParticipant==true||role==3||okOwner==true){
            var obj = {
     questionOwner:req.user.firstname,
     questionVid:videoNam,
@@ -425,7 +429,7 @@ router.post('/putVideo/:cid', upload.single('file'),isLoggedIn,isTeacher, (req, 
 // @route GET /image/:filename
 // @desc Display Image
 router.get('/video/:videoNam',isLoggedIn, (req, res) => {
-
+  const role=req.user.role;
   gfs.files.findOne({ filename: req.params.videoNam }, (err, file) => {
     // Check if file
 
@@ -442,7 +446,7 @@ Course.findById(cidd)
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
       const okOwner= (foundCourse.courseOwner==cu);
 
-      if(okParticipant==true || okOwner==true){
+      if(okParticipant==true || okOwner==true || role==3){
            // Check if image
     if (file.contentType === 'video/mp4') {
       // Read output to browser
@@ -503,19 +507,19 @@ router.get('/showVideo/:videoNam/:courseId',isLoggedIn, (req, res) => {
   const videoNam = req.params.videoNam;
   const cidd = req.params.courseId
   const cu=req.user.username;
- 
+  const role=req.user.role;
 
 Course.findById(cidd)
     .then((foundCourse) => {
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
       const okOwner= (foundCourse.courseOwner==cu);
-      if(okParticipant==true || okOwner==true){
+      if(okParticipant==true || okOwner==true || role==3){
       question.find({questionVid:videoNam}, (err, foundQuestions) => {
     if (err) {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam ,okParticipant:okParticipant, cidd:cidd})
+      res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam ,okParticipant:okParticipant, cidd:cidd,role:role})
     }
       });
       }else
@@ -591,16 +595,20 @@ router.get("/payment/success/:courseId", (req, res) => {
 
 
 router.get("/myCourses", isLoggedIn, (req, res) => {
-  const cu = req.user._id;
-  User.findOne({ _id: cu }, (err, purchasedCourses) => {
-    if (err) {
-      console.log("====ERROR====")
-      console.log(err);
-    } else {
-      res.render("my-course", { purchasedCourses: purchasedCourses })
-    }
-  });
+  const cu = req.user.username;
+  const myCourseArray=[];
+  Course.find({}, (err, purchasedCourses) => {
+    purchasedCourses.forEach( (course)=>{
+      if(course.courseParticipant.includes(cu)){
+        myCourseArray.push(course)
+      }
+      
+    });
+    res.render("my-course", { myCourseArray: myCourseArray})
+          
+        
 
+    });
 });
 
 router.get("/quiz/:courseId", (req, res) => {
@@ -624,12 +632,12 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
   const idcompare = req.params.courseId;
   const cu=req.user.username;
-  
+  const role=req.user.role;
   Course.findById(cidd)
     .then((found) => {
       const okParticipant=(found.courseParticipant).includes(cu);
       const okOwner= (found.courseOwner==cu);
-      if(okParticipant==true || okOwner==true){
+      if(okParticipant==true || okOwner==true || role==3){
 
         Course.findById(cidd)
     .then((foundCourse) => {
@@ -637,7 +645,7 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
       gfs.files.find({ courseInfo: idcompare }).toArray((err, files) => {
         // Check if files
         if (!files || files.length === 0) {
-          res.render('videos', { foundCourse: foundCourse, files: false });
+          res.render('videos', { foundCourse: foundCourse, files: false ,role:role});
         } else {
           files.map(file => {
             if (
@@ -651,7 +659,7 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 
           });
 
-          res.render('videos', { foundCourse: foundCourse, files: files });
+          res.render('videos', { foundCourse: foundCourse, files: files ,role:role});
         }
 
       });
@@ -673,19 +681,21 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
   const idcompare = req.params.courseId;
   const cu=req.user.username;
+  const role=req.user.role;
+  
   
   Course.findById(cidd)
     .then((found) => {
       const okParticipant=(found.courseParticipant).includes(cu);
       const okOwner= (found.courseOwner==cu);
-      if(okParticipant==true || okOwner==true){
+      if(okParticipant==true || okOwner==true || role==3){
 
         quiz.find({courseId:idcompare}, (err, quizzes) => {
           if (err) {
             console.log("====ERROR====")
             console.log(err);
           } else {
-            res.render("quizzes", { quizzes: quizzes, okParticipant:okParticipant, cidd:cidd})
+            res.render("quizzes", { quizzes: quizzes, okParticipant:okParticipant, cidd:cidd,role:role})
           }
             });
     //  quiz.find({ courseId: idcompare }
@@ -703,8 +713,26 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
     })
 
   });
+  router.get("/signin", (req, res) => {
+    res.render('admin/signin');
+  })
+  
+  router.post('/signin', passport.authenticate("local",
+    {
+      successRedirect: '/admin',
+      failureRedirect: '/signin'
+    }), (req, res) => {
+  
+    });
 
-  router.get("/admin" , (req,res)=>{
+  router.get("/admin" ,isLoggedIn, (req,res)=>{
+    const isAdmin = req.user.role
+
+    if(isAdmin!=3){
+      req.logout();
+      res.redirect("/login");
+    }else{
+
     User.find({}, (err, foundUsers) => {
       if (err) {
         console.log("====ERROR====")
@@ -720,8 +748,77 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
         });
       }
     });
-    
+    }
   })
+  router.get("/admin/ban/:username", (req, res) => {
+    const username=req.params.username;
+    db.collection("users").findOneAndDelete(
+      { "username" : username });
+
+    // db.collection("courses").deleteMany( { "courseOwner" : username } );
+
+      
+   
+    res.redirect("/admin")
+  })
+  
+  router.get("/admin/remove/:courseId", isLoggedIn,(req, res) => {
+    const courseId=req.params.courseId;
+    
+    Course.findByIdAndDelete(courseId)
+      .then((foundCourse) => {
+     console.log(foundCourse);
+    })
+    res.redirect("/admin")
+  })
+
+  router.get("/deleteVideo/:videoNam/:courseId", isLoggedIn,(req, res) => {
+    const videoNam=req.params.videoNam;
+    const cid=req.params.courseId;
+    const cidd = req.params.courseId
+    const cu=req.user.username;
+    const role = req.user.role;
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okOwner==true||role==3){
+           gfs.files.findOneAndDelete({ filename: videoNam });
+    res.redirect("/videolist/"+cid)
+      }else{
+         res.redirect("/")
+      }
+     
+    })      
+    }) 
+    
+    
+    
+    
+    //ÇALIŞMIYOR
+    router.get("/deleteQuiz/:quizId/:courseId", isLoggedIn,(req, res) => {
+      const videoNam=req.params.videoNam;
+      const cid=req.params.courseId;
+      const cidd = req.params.courseId
+      const cu=req.user.username;
+      const role = req.user.role;
+      const q = req.params.quizId;
+      Course.findById(cidd)
+      .then((foundCourse) => {
+        const okOwner= (foundCourse.courseOwner==cu);
+        if(okOwner==true||role==3){
+         
+          quiz.findByIdAndDelete(q);
+
+        res.redirect("/quizlist/"+cid)
+
+        }else{
+           res.redirect("/")
+        }
+       
+      })      
+      })
+
+
 
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {

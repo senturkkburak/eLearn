@@ -126,12 +126,18 @@
     <div class="card">
         <img src="" alt="">
         <%console.log(okParticipant) %>
-        <%if(okParticipant==false && okOwner == false){ %>
+        <%if(okParticipant==false && okOwner == false && role!=3){ %>
         <h3><%= foundCourse.coursePrice %> $</h3>
         <a href="/payment/<%= foundCourse._id %>" class="payment">Satın al</a>
         <%}else{ %>
+            <%if(role==3){%>
+
+            <% }else{ %>
             <h3>Purchased</h3>
-            <% } %>
+            <% }} %>
+            <%if(role==3){ %> 
+                <a href="/videolist/<%= foundCourse._id %>" class="payment">Videoları Gör</a>
+                <% } %>
     </div>
     
 </div>

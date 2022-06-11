@@ -57,7 +57,6 @@ app.use((req,res,next)=>{
 
 //Routes Using
 app.use(indexRoutes);
-app.use(adminRoutes);
 
 
 

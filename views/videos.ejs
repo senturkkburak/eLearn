@@ -31,6 +31,9 @@
               <tr>
                 <th scope="row"></th>
                 <td><a href="/showVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4><%= file.videoTitle %> </h4></a></td>
+                <% if(role==3||role==1){ %>
+                  <td><a href="/deleteVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4>Delete </h4></a></td>
+                    <% } %>
                 <% } else { %>
 
                   <% } %>

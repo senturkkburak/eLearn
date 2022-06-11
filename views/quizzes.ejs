@@ -28,16 +28,18 @@
                 <% quizzes.forEach((quiz)=>{ %>
               <tr>
                 <th scope="row"></th>
-                <td><a href="/quiz/<%= cidd %>"> <h4>Quiz </h4></a></td>
-                <p><%= cidd %></p>
-               
+                <td><a href="/quiz/<%= quiz._id %>"> <h4>Quiz </h4></a></td>
+                <% if(role==3){ %>
+                  <td><a href="/deleteQuiz/<%= quiz._id %>/<%=cidd%>"> <h4>Delete </h4></a></td>
+                <% } %>
+      
               </tr>
              
                <% });  %>
             </tbody>
           </table>
           <br><br><br><br><br><br><br><br><br><br>
-          <a href="/quiz/<%= cidd %>"> </h4>ıdssjdsdıjsdjısjıds</a>
+         
 </div>
 
           

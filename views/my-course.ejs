@@ -36,7 +36,7 @@
 <div class="containers text-center">
     <h2 class="display-5 py-4">Öğrenim İçeriğim</h2>
 </div>
-<% purchasedCourses.purchased.forEach( (course)=>{ %>
+<% myCourseArray.forEach( (course)=>{ %>
 <div class="contents d-flex flex-row justify-content-between">
     <div class="cards">
         <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok" width="200" height="125" >
@@ -48,7 +48,7 @@
 </div>
 <% });  %>
 
-<% if(purchasedCourses.purchased==""){ %>
+<% if(myCourseArray==""){ %>
 <p>You don't have any course</p>
     <% }  %>  
 <%- include ('./partials/footer') %>

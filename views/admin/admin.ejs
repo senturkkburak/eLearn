@@ -23,13 +23,23 @@
             </thead>
             <tbody style="font-size: 20px;""> 
             <% foundUsers.forEach( (user)=>{ %>
+                <%if(user.role!=3) { %>
+                    
+                   
             <tr>
                 <!--Buraya öğrencilerin bulunduğu bir liste konulacak user rolelerini kontrol edip
                 öğrenci olup olmadıklarına bakmak lazım-->
                 <td><%=user.username%></td>
-                <td ><%= user.role%></td>
-                <td><a href=" /admin" class="btn btn-outline-danger btn-md">Ban</a></td>
-                </tr>
+                <td ><%if(user.role==0) { %>
+                    Student
+                    <% } %>
+                    <%if(user.role==1) { %>
+                        Teacher
+                        <% } %>
+                        
+                </td>
+                    <td><a href=" /admin/ban/<%=user.username%>" class="btn btn-outline-danger btn-md">Ban</a></td>
+                </tr> <% } %>
                 <% }); %>
             </tbody>
 
@@ -44,6 +54,7 @@
                     <th>Kurs Listesi</th>
                     <th>Kurs Öğretmeni</th>
                     <th>Kursu Kaldır</th>
+                    <th>Kursu Gör</th>
                 </tr>
             </thead>
             <tbody style="font-size: 20px;""> 
@@ -53,7 +64,8 @@
                 öğrenci olup olmadıklarına bakmak lazım-->
                 <td><%= course.courseName %></td>
                 <td><%= course.courseOwner %></td>
-                <td><a href=" /admin" class="btn btn-outline-danger btn-md">Ban</a></td>
+                <td><a href=" /admin/remove/<%=course._id%>" class="btn btn-outline-danger btn-md">Ban</a></td>
+                <td><a href=" /courses/<%=course._id%>" class="btn btn-outline-danger btn-md">See</a></td>
                 </tr>
                 <% }); %>
             </tbody>

@@ -52,7 +52,7 @@
 
 
                 <% } %>
-
+                <% if(currentUser.role==2) { %>
                 <li class="nav-item">
                 <a class="nav-link" href="/profile">My Profile</a>
               </li>
@@ -62,6 +62,12 @@
               <li class="nav-item">
                 <a class="nav-link" href="/myCourses">My Courses</a>
               </li><li class="nav-item">
+                <% } %>
+                <% if(currentUser.role==3) { %>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                  </li>
+                <% } %>
                 <a class="nav-link" href="/signout">Sign Out</a>
               </li> 
               <% } %>
