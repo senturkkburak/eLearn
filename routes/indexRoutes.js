@@ -702,14 +702,25 @@ router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
      
     })
 
-
-
-
-  
   });
 
   router.get("/admin" , (req,res)=>{
-    res.render("admin/admin");
+    User.find({}, (err, foundUsers) => {
+      if (err) {
+        console.log("====ERROR====")
+        console.log(err);
+      } else {
+        Course.find({}, (err, foundCourse) => {
+          if (err) {
+            console.log("====ERROR====")
+            console.log(err);
+          } else {
+            res.render("admin/admin", { foundCourse: foundCourse , foundUsers:foundUsers})
+          }
+        });
+      }
+    });
+    
   })
 
   function isLoggedIn(req, res, next) {

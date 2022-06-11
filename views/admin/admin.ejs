@@ -1,42 +1,68 @@
 <%- include ('../partials/header') %>
-<br><br><br><br>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
-<h1>Admin Panel</h1>
+        * {
+            font-family: 'Poppins', 'sans-serif';
+        }
+    </style>
+    <br><br>
 
-<br><br><br><br>
+    <h1 class="text-center">Admin Panel</h1>
 
-<table class="table table-striped w-75">
-    <thead>
-        <tr>
-            <th>Öğrenci Listesi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <!--Buraya öğrencilerin bulunduğu bir liste konulacak user rolelerini kontrol edip
-            öğrenci olup olmadıklarına bakmak lazım-->
-            <td></td>
-        </tr>
-    </tbody>
-    
-</table>
+    <br><br><br>
+    <div class="tables mb-5" style="margin-left: 300px; ">
+        <h3 class="w-75 text-center mb-4">Kullanıcı Listesi</h3>
+        <table class="table table-striped w-75 text-center">
+            <thead style="font-size: 24px;">
+                <tr>
+                    <th>Öğrenci Listesi</th>
+                    <th>Öğrenci mi Öğretmen mi</th>
+                    <th>Kullanıcyı Kaldır</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 20px;""> 
+            <% foundUsers.forEach( (user)=>{ %>
+            <tr>
+                <!--Buraya öğrencilerin bulunduğu bir liste konulacak user rolelerini kontrol edip
+                öğrenci olup olmadıklarına bakmak lazım-->
+                <td><%=user.username%></td>
+                <td ><%= user.role%></td>
+                <td><a href=" /admin" class="btn btn-outline-danger btn-md">Ban</a></td>
+                </tr>
+                <% }); %>
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="tables mb-5" style="margin-left: 300px; ">
+        <h3 class="w-75 text-center mb-4">Kurs Listesi</h3>
+        <table class="table table-striped w-75 text-center">
+            <thead style="font-size: 24px;">
+                <tr>
+                    <th>Kurs Listesi</th>
+                    <th>Kurs Öğretmeni</th>
+                    <th>Kursu Kaldır</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 20px;""> 
+            <% foundCourse.forEach( (course)=>{ %>
+            <tr>
+                <!--Buraya öğrencilerin bulunduğu bir liste konulacak user rolelerini kontrol edip
+                öğrenci olup olmadıklarına bakmak lazım-->
+                <td><%= course.courseName %></td>
+                <td><%= course.courseOwner %></td>
+                <td><a href=" /admin" class="btn btn-outline-danger btn-md">Ban</a></td>
+                </tr>
+                <% }); %>
+            </tbody>
+
+        </table>
+    </div>
 
 
-<table class="table table-striped w-75">
-    <thead>
-        <tr>
-            
-            <th>Öğretmen Listesi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <!--Buraya öğrencilerin bulunduğu bir liste konulacak user rolelerini kontrol edip
-            öğretmen olup olmadıklarına bakmak lazım-->
-            <td></td>
-        </tr>
-    </tbody>
-    
-</table>
 
-<%- include ('../partials/footer') %>
+
+
+    <%- include ('../partials/footer') %>
