@@ -934,6 +934,29 @@ Course.findById(cidd)
      
     })      
     }) 
+    router.get("/repdeleteVideo/:videoNam/:courseId/:reportId", isLoggedIn,(req, res) => {
+      const videoNam=req.params.videoNam;
+      const cid=req.params.courseId;
+      const cidd = req.params.courseId
+      const cu=req.user.username;
+      const role = req.user.role;
+      const q=req.params.reportId;
+       Course.findById(cidd)
+      .then((foundCourse) => {
+        const okOwner= (foundCourse.courseOwner==cu);
+        if(role==3){
+             gfs.files.findOneAndDelete({ filename: videoNam });
+             reports.findByIdAndRemove(q).then((foundQuiz)=>{
+    
+            })
+
+      res.redirect("/seeReports")
+        }else{
+           res.redirect("/")
+        }
+       
+      })      
+      }) 
 
     router.get("/deleteQuiz/:quizId/:courseId", isLoggedIn,(req, res) => {
       const cid=req.params.courseId;
@@ -999,14 +1022,26 @@ Course.findById(cidd)
           const videoNam =req.params.videoNam;
           const courseId=req.params.courseId;
           const reportType="video";
-          res.render("reportVideo",{videoNam:videoNam,courseId:courseId,reportType:reportType})
+          const cidd = req.params.courseId
+          const cu=req.user.username;
+        Course.findById(cidd)
+          .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      if(okParticipant==true){
+        res.render("reportVideo",{videoNam:videoNam,courseId:courseId,reportType:reportType})
+       }else{
+        res.redirect("/")
+        }
+           })
+          
         });
 
         router.post("/reportVideo/:videoNam/:courseId",isLoggedIn,(req,res)=>{
           const videoNam =req.params.videoNam;
           const courseId=req.params.courseId;
           const reportType="video";
-
+          const role=req.user.role;
+          
           var obj = {
             reportOwner:req.user.username,
             courseId:courseId,
@@ -1025,6 +1060,7 @@ Course.findById(cidd)
               res.send(err);
             });
             res.redirect("/showVideo/"+videoNam+"/"+courseId);
+          
 
         });
 

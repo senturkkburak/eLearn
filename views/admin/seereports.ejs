@@ -15,7 +15,7 @@
         <tr>
             <td><%=report.reportOwner%></td>
             <td><%=report.reason%></td>
-            <td><a href="/deleteVideo/<%=report.reportedVideoName%>/<%=report.courseId%>" class="btn btn-outline-danger btn-md">Delete Video</a></td>
+            <td><a href="/repdeleteVideo/<%=report.reportedVideoName%>/<%=report.courseId%>/<%=report._id%>" class="btn btn-outline-danger btn-md">Delete Video</a></td>
             <td><a href="/showVideo/<%=report.reportedVideoName%>/<%=report.courseId%>" class="btn btn-outline-danger btn-md">See Video</a></td>
             <td><a href="/concludeReport/<%=report._id%>" class="btn btn-outline-success btn-md">Conclude</a></td>
             </tr>
