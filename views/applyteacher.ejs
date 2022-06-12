@@ -7,6 +7,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .container{
+        border-color: lightgray;
+        border-radius: 5px;
+      }
+    </style>
     <% if(isAppliedBefore!=""){ %>
         <p>Thank you for your application</p>
         <input type="submit" value="Cancel Application" id="submitApplication"class="btn btn-primary btn-block" onclick="location.href='/cancelApplication';">
@@ -14,12 +20,17 @@
     <title>Teacher Application</title>
 </head>
 <body>
+  <h3 class="text-center mt-5">Buraya CV ni yükleyebilirsin</h3>
+  <div class="container w-50 d-flex justify-content-center align-items center my-5 border border-2 py-5">
+    
     <form action="/applyTeacher" method="POST" enctype="multipart/form-data">
-        <div class="custom-file mb-3">
-          <input type="file" name="file" id="file" class="custom-file-input">
-          <label for="file" class="custom-file-label">Upload Your Resume</label>
-        </div>
-        <input type="submit" value="Submit" id="submitApplication"class="btn btn-primary btn-block" onclick="location.href='/applyTeacher';">
-      </form>
+      <div class="custom-file mb-3">
+        <input type="file" name="file" id="file" class="custom-file-input">
+        <label for="file" class="custom-file-label">Upload Your Resume</label>
+      </div>
+      <input type="submit" value="Submit" id="submitApplication"class="btn btn-primary btn-block" onclick="location.href='/applyTeacher';">
+    </form>
+  </div>
+    
    <% } %>
 <%- include ('./partials/footer') %>

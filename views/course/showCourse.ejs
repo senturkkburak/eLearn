@@ -2,6 +2,7 @@
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
   video {
     width: 100%;
     height: 500px;
@@ -26,6 +27,9 @@
   }
 </style>
 <style>
+    *{
+        font-family: 'Poppins';
+    }
      .containers {
             width: 50%;
             margin: 100px 150px;
@@ -78,7 +82,7 @@
     }
     h2{
         font-size: 2rem;
-        font-family: Arial, Helvetica, sans-serif;
+        
         margin-left: 20px;
         margin-top: 20px;
         margin-bottom: 20px;
@@ -86,56 +90,54 @@
     }
     span,p{
         font-size: 0.85rem;
-        font-family: Arial, Helvetica, sans-serif;
+        
         margin-left: 20px;
         margin-top: 20px;
     }
 
     .card{
         width: 30%;
-        height:300px;
+        height:150px;
         display: inline;
     }
 
     .payment{
         margin-top: 20px;
+        margin-left: 150px;
         text-decoration: none;
         padding: 5px;
         width: 50%;
         border: 1px solid #000;
+        background-color: #d4d6d9;
+        color: #000;
+        font-size: 1.5rem;
+        font-family: 'Poppins';
+    }
+    .payment :hover{
         background-color: rgb(135, 79, 186);
         color: white;
-        font-size: 1.5rem;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 
-<div class="image-container">
+
+<div class="container mt-4 d-flex justify-content-center align-items-center" >
+ 
     
-</div>
-<div class="container">
-    <div class="ogrenecekleriniz">
-        <h2>Öğrenecekleriniz</h2>
-        <span>Task temelli programlama ile asenkron kodlar yazmayı öğreneceksiniz</span>
-        <p>TPL ile multi-thread üzerinde çalışan kodlar yazmayı öğreneceksiniz.</p>
-        <p>PLINQ ile multi-thread üzerinde çalışan LINQ sorguları yazmayı öğreneceksiniz.</p>
-    </div>
-    
-    <div class="card">
+    <div class="card w-50 ">
         
         <%console.log(okParticipant) %>
         <%if(okParticipant==false && okOwner == false && role!=3){ %>
-        <h3><%= foundCourse.coursePrice %> $</h3>
+        <h3 class="text-center"><%= foundCourse.coursePrice %> $</h3>
 
-        <a href="/payment/<%= foundCourse._id %>" class="payment">Satın al</a>
+        <a href="/payment/<%= foundCourse._id %>" class="payment d-flex justify-content-center align-items-center">Satın al</a>
 
         <%}else{ %>
             <%if(role==3 || okOwner==true){%>
                 
             <% }else{ %>
-            <h3>Purchased</h3>
+            <h3 class="text-center">Purchased</h3>
             <% }} %>
             <%if(role==3){ %> 
                 <br>
@@ -152,8 +154,8 @@
 
 
 
-<div class="container d-flex flex-row mt-4">
-    <div class="col-4"></div>
+<div class="container-fluid w-100 d-flex justify-content-center align-items-center mt-4">
+   
     <div class="col-4">
         <h3 class="mb-3 p-2 border-bottom">Course Name:  <%= foundCourse.courseName %></h3>
         <form action="/putVideo">
@@ -183,7 +185,7 @@
         
     
     </div>
-    <div class="col-4"></div>
+    
 </div>
 
 <div class="containers">

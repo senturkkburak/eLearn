@@ -4,11 +4,9 @@ const express = require('express'),
   Course = require('../models/courseModel'),
   question = require('../models/question'),
   quiz = require('../models/quiz'),
-<<<<<<< Updated upstream
+
   reports = require('../models/reportModel'),
-=======
   notification = require("../models/notification"),
->>>>>>> Stashed changes
   LocalStrategy = require("passport-local"),
   expressSession = require("express-session"),
   router = express.Router();
@@ -760,20 +758,23 @@ router.get("/payment/success/:courseId", (req, res) => {
 
 
 router.get("/myCourses", isLoggedIn, (req, res) => {
+  
   const cu = req.user.username;
-  const myCourseArray=[];
+  const myCourseArr=[];
   Course.find({}, (err, purchasedCourses) => {
     purchasedCourses.forEach( (course)=>{
       if(course.courseParticipant.includes(cu)){
-        myCourseArray.push(course)
+        myCourseArr.push(course)
       }
       
     });
-    res.render("my-course", { myCourseArray: myCourseArray})
+    
+    res.render("my-course", { myCourseArr: myCourseArr})
           
         
 
     });
+    
 });
 
 router.get("/quiz/:courseId",isLoggedIn, (req, res) => {
