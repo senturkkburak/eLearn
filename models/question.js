@@ -2,13 +2,10 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const questionSchema = new Schema({
-    //resim userdan çekilecek
     questionOwner:{type:String,require:true},
     questionVid:{type:String,require:true},
     date:{type:String, default:Date.now},
-    //soru başlığı
     questionTitle:{type:String,require:true},
-    //soru içeriği
     questionBody:{type:String,require:true},
     qAnswerCount:{type:Number},
     qLikeCount:{type:Number}

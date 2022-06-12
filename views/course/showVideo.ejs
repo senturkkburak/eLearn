@@ -44,16 +44,46 @@
                   <p  style="font-size: 18px;" id="questionOwner">From: <%=   question.questionOwner  %></p>
                   <p  style="font-size: 18px;" id="questionTitle">Question: <%=   question.questionTitle  %></p>
                   <p style="font-size: 18px;" id="questionBody"><%-   question.questionBody  %></p>
+                        <% foundReply.forEach( (reply)=>{ %>
+                  <% if(reply.questionId==question._id){ %>
+                    <br>
+                    <p style="font-size: 18px;" id="questionBody">Reply From Teacher:</p>
+                    <p  style="font-size: 18px;" id="replyOwner">From: <%=   reply.replyOwner  %></p>
+                    <p  style="font-size: 18px;" id="replyTitle">Reply: <%=   reply.replyTitle  %></p>
+                    <p style="font-size: 18px;" id="replyBody"><%-   reply.replyBody  %></p>
+                    <% } %>
                   
+
                   <%if(role==3){ %>
                     <a href="/deleteQuestion/<%=question._id%>/<%=cidd%>" class="btn btn-outline-danger btn-md">Delete</a>
                     <% } %>
                 </div>
+                      <% });  %>
+                      <% if(okOwner==true){ %>
+                        <div id="replyForm" class="container replyContainer mt-5">
+                          <form action="/showVideo/<%= videoNam%>/<%=cidd%>/<%= question._id %>" method="POST">
+                            <div class="form-group mb-3">
+                              <div class="form-label">Reply Title</div>
+                              <input name="replyTitle" type="text" id="rtitle" class="form-control">
+                            </div>
+                            <div class="form-group mb-3">
+                              <div class="form-label">Details</div>
+                              <textarea name="replyBody" id="details"></textarea>
+                            </div>
+                            <div class="form-group mb-3">
+          
+                              <input type="submit" id="submit" class="form-control btn btn-outline-success btn-lg" onclick="location.href='/showVideo/<%= videoNam%>/<%=cidd%>/<%= question._id %>';">
+                            </div>
+                          </form>
+                        </div>
+                       <% } %>
                 <% });  %>
               </div> 
               <% if(okParticipant==true){ %>
               <p id="soruSor" class="text-center mb-5" style="cursor: pointer; font-size: 25px; ">Yeni soru sor</p>
              <% } %>
+             
+             
               <div id="questionForm" class="container questionForm mt-5">
                 <form action="/showVideo/<%= videoNam%>/<%=cidd%>" method="POST">
                   <div class="form-group mb-3">
@@ -71,6 +101,8 @@
                 </form>
                 <button class="btn btn-outline-danger btn-lg w-100 mt-3 mb-3">Tüm Sorulara Geri Dön</button>
               </div>
+
+             
 
               <script>
                 CKEDITOR.replace('Ayrıntılar');
@@ -92,6 +124,8 @@
                     $("#questionForm").hide();
                   });
                 });
+                        //////////////////
+               
 
 
               </script>

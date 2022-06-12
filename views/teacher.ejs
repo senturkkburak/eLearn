@@ -77,16 +77,17 @@
     <table class="table table-striped w-75">
         <thead>
             <tr>
-                <th>Bildirimler</th>
-                <th>Okundu mu</th>
+                <th>Notifications</th>
+                <th>Delete Notification</th>
             </tr>
         </thead>
         <tbody>
             <% foundNotifications.forEach((notification)=>{ %>
             <tr>
-                <td><%= notification.username%> kişisi <%= notification.coursename %> kursundan <%= notification.videoname
-                    %> videosuna soru sordu</td>
-                    <td><button class="btn btn-primary rounded buton"><i class="fa-solid fa-check"></i></button></td>
+                <td><a href="/showVideo/<%= notification.videoname
+                    %>/<%=notification.courseId%>"><%= notification.username%> kişisi <%= notification.coursename %> kursundan <%= notification.videoname
+                    %> videosuna soru sordu</a></td>
+                    <td><a href="/deleteNotification/<%= notification._id %>" class="btn btn-outline-primary btn-lg">Delete</a></td>
             </tr>
             <% });  %>
         </tbody>

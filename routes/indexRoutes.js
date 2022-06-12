@@ -4,7 +4,7 @@ const express = require('express'),
   Course = require('../models/courseModel'),
   question = require('../models/question'),
   quiz = require('../models/quiz'),
-
+  reply = require('../models/replies'),
   reports = require('../models/reportModel'),
   notification = require("../models/notification"),
   LocalStrategy = require("passport-local"),
@@ -149,7 +149,7 @@ router.get("/teacher", isLoggedIn, isTeacher, (req, res) => {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      notification.find({},(err,foundNotifications)=>{
+      notification.find({courseOwner:cu},(err,foundNotifications)=>{
         if (err) {
           console.log("====ERROR====")
           console.log(err);
@@ -396,7 +396,16 @@ Course.findById(cidd)
   var obj2 = {
     coursename:foundCourse.courseName,
     videoname:videoNam,
-    username:cu
+    username:cu,
+    courseId:foundCourse._id,
+    courseOwner:foundCourse.courseOwner
+  }
+  var obj3={
+    replyOwner:foundCourse.courseOwner,
+    replyVid:videoNam,
+    replyTitle:req.body.replyTitle,
+    replyBody:req.body.replyBody,
+    rLikeCount:0
   }
   notification.create(obj2)
   .then((obj2) => {
@@ -433,6 +442,49 @@ Course.findById(cidd)
   
   
 });
+
+router.post("/showVideo/:videoNam/:courseId/:questionId",isLoggedIn, (req, res) => {
+  // res.json(req.body);
+  const cidd = req.params.courseId
+   const cu=req.user.username;
+   const videoNam=req.params.videoNam;
+   const role=req.user.role;
+   const qid=req.params.questionId;
+ Course.findById(cidd)
+     .then((foundCourse) => {
+       const okParticipant=(foundCourse.courseParticipant).includes(cu);
+       const okOwner= (foundCourse.courseOwner==cu);
+       if(okParticipant==true||role==3||okOwner==true){
+            
+   var obj3={
+     replyOwner:foundCourse.courseOwner,
+     replyVid:videoNam,
+     replyTitle:req.body.replyTitle,
+     replyBody:req.body.replyBody,
+     rLikeCount:0,
+     questionId:qid
+   }
+   
+ 
+   reply.create(obj3)
+     .then((obj3) => {
+       console.log(obj3);
+     })
+     .catch((err) => {
+       console.log("====ERROR====");
+       console.log(err);
+       res.send(err);
+     });
+     res.redirect("/showVideo/"+videoNam+"/"+cidd);
+       }else
+       res.redirect("/")
+     })
+
+ });
+
+
+
+
 router.post("/applyTeacher",  upload.single('file'), isLoggedIn, (req, res) => {
   const cv = req.file.filename;
 
@@ -675,20 +727,18 @@ router.get('/showVideo/:videoNam/:courseId',isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
   const cu=req.user.username;
   const role=req.user.role;
-
 Course.findById(cidd)
     .then((foundCourse) => {
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
       const okOwner= (foundCourse.courseOwner==cu);
       if(okParticipant==true || okOwner==true || role==3){
       question.find({questionVid:videoNam}, (err, foundQuestions) => {
-    if (err) {
-      console.log("====ERROR====")
-      console.log(err);
-    } else {
-      res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam ,okParticipant:okParticipant, cidd:cidd,role:role})
-    }
+      
+       
+      reply.find({},(err, foundReply)=>{
+     res.render("course/showVideo", { foundQuestions: foundQuestions, videoNam: videoNam ,okParticipant:okParticipant, okOwner:okOwner,cidd:cidd,role:role,foundReply:foundReply})
       });
+    });
       }else
     res.redirect("/")
     })
@@ -1114,7 +1164,24 @@ Course.findById(cidd)
            
             
           });
+          router.get("/deleteNotification/:notificationId", isLoggedIn,(req, res) => {
+            const cu=req.user.username;
+            const role = req.user.role;
+            const q = req.params.notificationId;
 
+              if(role==1){
+               
+                notification.findByIdAndRemove(q).then((foundQuiz)=>{
+      
+                })
+                res.redirect(req.header('referer'));
+      
+              }else{
+                 res.redirect("/")
+              }
+             
+              
+            });
 
 
   function isLoggedIn(req, res, next) {
