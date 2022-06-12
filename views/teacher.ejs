@@ -1,5 +1,5 @@
 <%- include ('./partials/header') %>
-
+<script src="https://kit.fontawesome.com/b2df9fdb37.js" crossorigin="anonymous"></script>
 
 
 
@@ -34,6 +34,16 @@
         font-family: Arial, Helvetica, sans-serif;
         text-align: center;
     }
+    .okundu{
+        background-color: blue;
+    }
+    .btn-primary{
+        background-color: #fff;
+    }
+    
+    .new{
+        color: #fff;
+    }
 </style>
 
 <div class="containers text-center">
@@ -59,6 +69,40 @@
 </div>
 
 <% });  %>
-<a href="/newCourse" class="btn btn-outline-primary btn-lg">Kurs Oluştur</a>
+<div class="a d-flex justify-content-center align-items-center">
+    <a href="/newCourse" class="btn btn-outline-primary btn-lg">Kurs Oluştur</a>
+</div>
+
+<div class="mt-5 d-flex justify-content-center align-items-center">
+    <table class="table table-striped w-75">
+        <thead>
+            <tr>
+                <th>Bildirimler</th>
+                <th>Okundu mu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% foundNotifications.forEach((notification)=>{ %>
+            <tr>
+                <td><%= notification.username%> kişisi <%= notification.coursename %> kursundan <%= notification.videoname
+                    %> videosuna soru sordu</td>
+                    <td><button class="btn btn-primary rounded buton"><i class="fa-solid fa-check"></i></button></td>
+            </tr>
+            <% });  %>
+        </tbody>
+    </table>
+</div>
+
+
 <br><br><br><br>
+<script>
+    var btn = document.querySelectorAll(".buton");
+    console.log(btn)
+    var i = document.querySelectorAll("i");
+    btn.onclick = () =>{
+        console.log(btn);
+        btn.classList.add("okundu");
+        i.classList.add("new");
+    }
+</script>
 <%- include ('./partials/footer') %>

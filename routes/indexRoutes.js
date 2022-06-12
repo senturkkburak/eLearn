@@ -4,7 +4,11 @@ const express = require('express'),
   Course = require('../models/courseModel'),
   question = require('../models/question'),
   quiz = require('../models/quiz'),
+<<<<<<< Updated upstream
   reports = require('../models/reportModel'),
+=======
+  notification = require("../models/notification"),
+>>>>>>> Stashed changes
   LocalStrategy = require("passport-local"),
   expressSession = require("express-session"),
   router = express.Router();
@@ -147,7 +151,15 @@ router.get("/teacher", isLoggedIn, isTeacher, (req, res) => {
       console.log("====ERROR====")
       console.log(err);
     } else {
-      res.render("teacher", { myCourses: myCourses })
+      notification.find({},(err,foundNotifications)=>{
+        if (err) {
+          console.log("====ERROR====")
+          console.log(err);
+      }else{
+        res.render("teacher", { myCourses: myCourses , foundNotifications:foundNotifications})
+      }
+      });
+      
     }
   });
 });
@@ -383,6 +395,25 @@ Course.findById(cidd)
     qAnswerCount:0,
     qLikeCount:0
   }
+  var obj2 = {
+    coursename:foundCourse.courseName,
+    videoname:videoNam,
+    username:cu
+  }
+  notification.create(obj2)
+  .then((obj2) => {
+    console.log(obj2);
+
+   
+
+  })
+  .catch((err) => {
+    console.log("====ERROR====");
+    console.log(err);
+    res.send(err);
+  });
+  
+
   question.create(obj)
     .then((obj) => {
       console.log(obj);
