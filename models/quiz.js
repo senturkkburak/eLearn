@@ -12,6 +12,7 @@ const examSchema = new Schema({
     secondoption:{type:String, require:true},
     thirdoption:{type:String, require:true},
     fourthoption:{type:String, require:true},
+    correctoption:{type:String,require:true}
     
 },
     {collection:"quiz"}

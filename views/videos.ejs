@@ -35,8 +35,11 @@
                 <% if(role==3||okOwner==true){ %>
                   <td><a href="/deleteVideo/<%= file.filename %>/<%=foundCourse._id %>"> <h4>Delete </h4></a></td>
                     <% } %>
+                    <div class="buttons d-flex flex-row justify-content-center" >
+                    <a class="btn btn-outline-danger btn-md m-5" href="/quizlist/<%=foundCourse._id%>">Quizzes</a>
+                                </div>
                 <% } else { %>
-
+                  
                   <% } %>
       
             

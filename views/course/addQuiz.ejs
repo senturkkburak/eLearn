@@ -36,20 +36,29 @@
                     <div class="mb-3">
 
                         <label for="fourthoption">Fourth option</label>
-                        <input type="text" name="fourthoption"id="fourthoption" class="form-control" placeholder="Fourth option"
+                        <input type="text" name="fourthoption" id="fourthoption" class="form-control" placeholder="Fourth option"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="correctoption">Fourth option</label>
+                        <input type="text" name="correctoption" id="correctoption" class="form-control" placeholder="Correct option"
                             autocomplete="off" required>
                     </div>
 
 
                 </div>
                <div class="buttons d-flex justify-content-between">
-                <input type="submit" value="Submit" id="createQuizButton"class="btn btn-primary btn-block" onclick="location.href='/addQuiz/<%=cid%>';">
-
-                <a href="/teacherCourses/<%= cid  %>" id="createButton" class="btn btn-md btn-outline-danger mt-4 btn-lg-6">İşlemi Bitir</a>
+                <input type="submit" value="Submit" id="createQuizButton"  class="btn btn-primary btn-block" onclick="location.href='/addQuiz/<%=cid%>';">
                </div>
             </form>
+            
         </div>
     </div>
+    <script>
+
+        
+    </script>
 
   
 

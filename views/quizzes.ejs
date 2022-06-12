@@ -26,18 +26,22 @@
             </thead>
             <tbody>
                 <% quizzes.forEach((quiz)=>{ %>
-                 
+                
               <tr>
                 <th scope="row"></th>
-                <td><a href="/quiz/<%= quiz._id %>"> <h4>Quiz </h4></a></td>
+                <td><a href="/quiz/<%= quiz._id %>/<%=cidd%>"> <h4>Quiz</h4></a></td>
+                
                 <% if(role==3||okOwner==true){ %>
                   <td><a href="/deleteQuiz/<%= quiz._id %>/<%=cidd%>"> <h4>Delete </h4></a></td>
                 <% } %>
+                
       
               </tr>
-             
+              
                <% });  %>
-
+               <div class="buttons d-flex flex-row justify-content-center" >
+                <a class="btn btn-outline-danger btn-md m-5" href="/videolist/<%=cidd%>">Videos</a>
+                            </div>
                <% if(quizzes==""){ %> 
                 <td>
                   <p>No Quizzes Yet</p>

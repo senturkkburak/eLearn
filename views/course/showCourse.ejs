@@ -139,12 +139,13 @@
             <% }else{ %>
             <h3 class="text-center">Purchased</h3>
             <% }} %>
+            <br>
             <%if(role==3){ %> 
-                <br>
+                
                 <a href="/videolist/<%= foundCourse._id %>" class="payment">Manage Videos</a>
-                <br><br><br><br><br><br>
+                <br><br>
                 <a href="/quizlist/<%= foundCourse._id %>" class="payment">Manage Quizzes</a>
-                <br>
+                
                 <% } %>
     </div>
     
@@ -157,6 +158,7 @@
 <div class="container-fluid w-100 d-flex justify-content-center align-items-center mt-4">
    
     <div class="col-4">
+        <br>
         <h3 class="mb-3 p-2 border-bottom">Course Name:  <%= foundCourse.courseName %></h3>
         <form action="/putVideo">
             <div class="mb-3">

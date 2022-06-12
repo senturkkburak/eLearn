@@ -347,31 +347,48 @@ Course.findById(cidd)
 });
 
 router.post("/addQuiz/:courseId",isLoggedIn,isTeacher ,(req,res)=>{
-
-  const cid=req.params.courseId;
-  var obj = {
-    quizTitle:req.body.quiztitle,
-    courseId: cid,
-    questionname: req.body.questionname,
-    firstoption: req.body.firstoption,
-    secondoption: req.body.secondoption,
-    thirdoption: req.body.thirdoption,
-    fourthoption:req.bodyfourthoption
-    }
-
-  quiz.create(obj)
-    .then((obj) => {
-      console.log(obj);
-     
-
+  const cidd = req.params.courseId
+  const cu=req.user.username;
+Course.findById(cidd)
+    .then((foundCourse) => {
+      const okOwner= (foundCourse.courseOwner==cu);
+      if(okOwner==true){
+           const cid=req.params.courseId;
+  if(req.body.correctoption==req.body.firstoption || req.body.correctoption==req.body.secondoption ||req.body.correctoption==req.body.thirdoption ||
+    req.body.correctoption==req.body.fourthoption){
+      var obj = {
+        quizTitle:req.body.quiztitle,
+        courseId: cid,
+        questionname: req.body.questionname,
+        firstoption: req.body.firstoption,
+        secondoption: req.body.secondoption,
+        thirdoption: req.body.thirdoption,
+        fourthoption:req.body.fourthoption,
+        correctoption:req.body.correctoption
+        }
+    
+      quiz.create(obj)
+        .then((obj) => {
+          console.log(obj);
+         res.redirect("/teacherCourses/"+cid);
+    
+        })
+        .catch((err) => {
+          console.log("====ERROR====");
+          console.log(err);
+          res.send(err);
+        });
+  }else if(req.body.questionname=="" || req.body.firstoption==""||req.body.secondoption==""||req.body.thirdoption==""||req.body.fourthoption==""||req.body.correctoption==""){
+    res.redirect("/addQuiz/"+cid);
+  }else{
+     res.redirect("/addQuiz/"+cid);
+    
+  }
+      }else
+     res.redirect("/")
+    })      
     })
-    .catch((err) => {
-      console.log("====ERROR====");
-      console.log(err);
-      res.send(err);
-    });
-    res.redirect("/teacherCourses/"+cid);
-})
+
 
 router.post("/showVideo/:videoNam/:courseId",isLoggedIn, (req, res) => {
  // res.json(req.body);
@@ -827,21 +844,63 @@ router.get("/myCourses", isLoggedIn, (req, res) => {
     
 });
 
-router.get("/quiz/:courseId",isLoggedIn, (req, res) => {
+router.get("/quiz/:quizId/:courseId",isLoggedIn, (req, res) => {
   //burada belirli course id sine sahip olan quizleri getir diyeceğiz 
   //sonra renderın içine koyup sayfada bastıracağız
   const cidd = req.params.courseId;
-  quiz.find({courseId:cidd}, (err, foundQuiz) => {
-    if (err) {
-      console.log("====ERROR====")
-      console.log(err);
-    } else {
-      res.render("quiz", { foundQuiz: foundQuiz,cidd:cidd})
-    }
-      });
+  const qid=req.params.quizId;
+  const cu=req.user.username;
+  const role = req.user.role;
+  Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner= (foundCourse.courseOwner==cu);
+
+      if(okParticipant==true || okOwner==true || role==3){
+      quiz.findById(qid)
+        .then((foundQuiz)=>{
+           res.render("course/showQuiz", { foundQuiz: foundQuiz,cidd:cidd,qid:qid,role:role,okParticipant:okParticipant,okOwner:okOwner,success:false})
+        });
+      }else{
+         res.redirect("/")
+      }
+  
+    })
 
 
 })
+
+router.post("/answer/:quizId/:courseId",isLoggedIn, (req, res) => {
+  //burada belirli course id sine sahip olan quizleri getir diyeceğiz 
+  //sonra renderın içine koyup sayfada bastıracağız
+  const cidd = req.params.courseId;
+  const qid=req.params.quizId;
+  const cu=req.user.username;
+  const role = req.user.role;
+  Course.findById(cidd)
+    .then((foundCourse) => {
+      const okParticipant=(foundCourse.courseParticipant).includes(cu);
+      const okOwner= (foundCourse.courseOwner==cu);
+
+      if(okParticipant==true || okOwner==true || role==3){
+      quiz.findById(qid)
+        .then((foundQuiz)=>{
+          if(req.body.answer==foundQuiz.correctoption){
+            res.render("course/showQuiz", { foundQuiz: foundQuiz,cidd:cidd,qid:qid,role:role,okParticipant:okParticipant,okOwner:okOwner,success:true})
+          }else{
+            res.render("course/showQuiz", { foundQuiz: foundQuiz,cidd:cidd,qid:qid,role:role,okParticipant:okParticipant,okOwner:okOwner,success:false})
+          }
+           
+        });
+      }else{
+         res.redirect("/")
+      }
+  
+    })
+
+
+})
+
 
 router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 

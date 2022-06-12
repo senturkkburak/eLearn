@@ -1,0 +1,75 @@
+<%- include ('../partials/header') %>
+  <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    video {
+      width: 100%;
+      height: 500px;
+    }
+
+    #pp {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+    }
+
+    #questionTitle {
+      display: inline;
+    }
+
+    #soruSor {
+      cursor: pointer;
+    }
+
+    .form-control {
+      border: 1px solid #000;
+    }
+  </style>
+  </head>
+
+  <body>
+ 
+              <div class="questionContainer m-5">
+                
+                <div class="questionContent mb-5">
+                    <h3 class="display-6 mb-3">Quiz</h3>
+                <p  style="font-size: 30px;" id="questionname"><%=   foundQuiz.questionname  %></p>
+                <p  style="font-size: 18px;" id="firstoption"> <%=   foundQuiz.firstoption  %></p>
+                <p  style="font-size: 18px;" id="firstoption"> <%=   foundQuiz.secondoption  %></p>
+                <p  style="font-size: 18px;" id="firstoption"> <%=   foundQuiz.thirdoption  %></p>
+                <p  style="font-size: 18px;" id="firstoption"> <%=   foundQuiz.fourthoption  %></p>
+                    <% if(success){ %>
+                        <p>Your Answer Is Correct</p>
+                       <% } %>
+                    <form action="/answer/<%=foundQuiz._id%>/<%=cidd%>" method="post">
+                    <div class="boxed bg--secondary boxed--border row">
+                        <input type="text" id="answer" name="answer" placeholder="Enter Your Answer">
+                        <input type="submit" value="Submit" id="answer"  class="btn btn-primary btn-block" onclick="location.href='/answer/<%=foundQuiz._id%>/<%=cidd%>';">
+                        <br><br>
+                        </form>
+                        <a href="/quizlist/<%=cidd%>" class="btn btn-outline-danger">Back to Quiz List</a>
+                        </div>
+                    </div>
+                
+               
+                </div>
+                    
+                   
+              </div> 
+              <!-- <script>
+                 $(document).ready(function () {
+                  $("#submit-button").click(function () {
+                    alert($("#correctoption").val(),"  ",$('input[name="frequency"]:checked').val())
+                    if($("#correctoption").val() == $('input[name="frequency"]:checked').val())
+                    alert("bravo");
+                  });
+                });
+               
+               
+              </script> -->
+
+
+
+
+
+              <%- include ('../partials/footer') %>
