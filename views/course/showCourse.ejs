@@ -193,27 +193,45 @@
 <div class="containers">
     <h2 class="display-4 m-2">Öğrenci Geri Bildirimi</h2>
     <h4 class="display-4 mb-3">Yorumlar</h4>
+    <% foundComment.forEach( (comment)=>{ %>
     <div class="comment-group">
         <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok">
         <div class="row">
-            <h5>Selçuk Bey</h5>
-            <i>*****</i>
+            <h5><%= comment.username %> <%= comment.surname %></h5>
+            
         </div>
-        <p>Çok güzel bir kurstu herkese tavisye ederim.</p>
-        <p style="font-weight: 600;">Bu yorum faydalı mıydı ?</p>
-        <button class="like btn btn-primary btn-md mb-3">like</button>
-        <button class="dislike btn btn-danger btn-md mb-3">dislike</button>
+        <p><%= comment.comment %></p>
+        
     </div>
-
+    <% foundReply.forEach( (reply)=>{ %>
+        <% if(reply.commentId==comment._id){ %>
     <div class="reply-group ">
         <img src="https://www.turkcebilgi.com/uploads/media/resim/mona_lisa.jpg" alt="yok">
         <div class="row">
-            <h5>Atıl Samancıoğlu(Eğitmen)</h5>
+            <h5><%=reply.replyOwnerF%> <%=reply.replyOwnerL%></h5>
         </div>
-
-        <p>Bu güzel yorumlarınız için teşekkür ederim.</p>
+        <% } %>
+        <p><%=reply.reply%></p>
     </div>
+    <% });  %>
+    <% if(okOwner==true){ %>
+        <div id="replyForm" class="container replyContainer mt-5">
+          <form action="/addReply/<%=foundCourse._id%>/<%= comment._id %>" method="POST">
+            <div class="form-group mb-3">
+              <div class="form-label">Reply Title</div>
+              <input name="reply" type="text" id="reply" class="form-control">
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" id="submit" class="form-control btn btn-outline-success btn-lg">
+            </div>
+          </form>
+        </div>
+       <% } %>
 
+
+
+
+    <% });  %>
 <script>
     CKEDITOR.replace( 'courseCurriculum' );
 </script>

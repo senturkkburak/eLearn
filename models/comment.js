@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const commentSchema = new Schema({
@@ -6,7 +6,12 @@ const commentSchema = new Schema({
     //star attribute u olucak
     date:{type:Date , default:Date.now},
     //date otomatik
-    comment:{type:String , require:true}
+    comment:{type:String , require:true},
+    username:{type:String , require:true},
+    surname:{type:String,require:true},
+    coursename:{type:String , require:true},
+    courseowner:{type:String , require:true},
+    courseId:{type:String,require:true}
     //comment itself
     //like dislike
 },

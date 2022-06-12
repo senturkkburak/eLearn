@@ -3,6 +3,8 @@ const express = require('express'),
   User = require('../models/userModel'),
   Course = require('../models/courseModel'),
   question = require('../models/question'),
+  comment = require('../models/comment'),
+  commentreply = require('../models/commentreply'),
   quiz = require('../models/quiz'),
   reply = require('../models/replies'),
   reports = require('../models/reportModel'),
@@ -242,12 +244,32 @@ router.get("/courses/:courseId", isLoggedIn, (req, res) => {
   Course.findById(cidd)
     .then((foundCourse) => {
       const okParticipant=(foundCourse.courseParticipant).includes(cu);
-      const okOwner=(foundCourse.courseOwner==cu);   
+      const okOwner=(foundCourse.courseOwner==cu);
+      comment.find({courseId:cidd}, (err, foundComment) => {
+        if (err) {
+          console.log("====ERROR====")
+          console.log(err);
+        } else {
+          commentreply.find({}, (err, foundReply) => {
+            if (err) {
+              console.log("====ERROR====")
+              console.log(err);
+            } else {
+              console.log(foundReply)
+              res.render("course/showCourse",{foundCourse:foundCourse , foundComment:foundComment,okParticipant:okParticipant,okOwner:okOwner,role:role,foundReply:foundReply} )
+            }
+          });
 
-      res.render('course/showCourse', { foundCourse: foundCourse, okParticipant: okParticipant, okOwner:okOwner , role:role});
+          
+         
+        }
+      });
+     
     })
  
 });
+
+
 router.get("/teacherCourses/:courseId", isLoggedIn, isTeacher,(req, res) => {
   const cidd = req.params.courseId
   const cu=req.user.username;
@@ -943,15 +965,84 @@ router.get("/videolist/:courseId", isLoggedIn, (req, res) => {
 
       }else{
         res.redirect("/");
-      }
-     
+      }    
     })
+  });
+
+  router.post("/videolist/:courseId", isLoggedIn, (req, res) => {
+    const cidd = req.params.courseId
+    const cu = req.user.username;
+    const fname=req.user.firstname;
+    const lname=req.user.lastname;
+    const role=req.user.role;
+  
+    Course.findById(cidd)
+      .then((foundCourse) => {
+        const okParticipant = (foundCourse.courseParticipant).includes(cu);
+        const okOwner = (foundCourse.courseOwner == cu);
 
 
-
-
+        var obj = {
+          comment: req.body.commentBody,
+          username: fname,
+          surname:lname,
+          coursename: foundCourse.courseName,
+          courseowner: foundCourse.courseOwner,
+          courseId:cidd
+        }
+  
+        comment.create(obj)
+          .then((obj) => {
+            console.log(obj);
+            res.redirect("/videolist/"+cidd);
+          })
+          .catch((err) => {
+            console.log("====ERROR====");
+            console.log(err);
+            res.send(err);
+          });
+  
+      })
+  
+  
+  
+  
   
   });
+
+  router.post("/addReply/:courseId/:commentId", isLoggedIn, (req, res) => {
+    const cidd = req.params.courseId
+    const cu = req.user.username;
+    const fname=req.user.firstname;
+    const lname=req.user.lastname;
+  
+    Course.findById(cidd)
+      .then((foundCourse) => {
+        const okParticipant = (foundCourse.courseParticipant).includes(cu);
+        const okOwner = (foundCourse.courseOwner == cu);
+
+
+        var obj = {
+          replyOwnerF: fname,
+          replyOwnerL: lname,
+          reply: req.body.reply,
+          courseId:cidd,
+          commentId:req.params.commentId
+        }
+  
+        commentreply.create(obj)
+          .then((obj) => {
+            console.log(obj);
+            res.redirect("/courses/"+cidd);
+          })
+          .catch((err) => {
+            console.log("====ERROR====");
+            console.log(err);
+            res.send(err);
+          }); 
+      })
+  });
+
 router.get("/quizlist/:courseId", isLoggedIn, (req, res) => {
   const cidd = req.params.courseId
   const idcompare = req.params.courseId;
